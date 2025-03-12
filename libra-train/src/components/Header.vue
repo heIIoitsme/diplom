@@ -1,7 +1,7 @@
 <template>
   <header class="header">
     <div class="logo">
-      <img src="@/assets/logo.png" alt="Логотип">
+      <img src="@/assets/LibraTrain.png" alt="Логотип" >
     </div>
     <nav class="nav">
       <router-link to="/">Главная</router-link>
@@ -32,7 +32,8 @@ export default {
 }
 
 .nav a {
-  color: white;
+  font-family: Kreadon;
+  color: rgb(0, 0, 0);
   margin: 0 1rem;
   text-decoration: none;
 }
@@ -49,6 +50,7 @@ export default {
   }
 
   .nav {
+    
     margin-top: 1rem;
   }
 

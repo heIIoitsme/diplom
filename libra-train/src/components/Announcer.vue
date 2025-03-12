@@ -23,7 +23,7 @@ export default {
 
 @media (max-width: 768px) {
   .main {
-    height: 100px;
+    height: 150px;
     max-width: 460px;
   }
 }
