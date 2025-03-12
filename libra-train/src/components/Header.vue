@@ -19,20 +19,12 @@ export default {
 
 <style scoped>
 .header {
-<<<<<<< HEAD
   height: 80px;
-=======
->>>>>>> f7a53161d751d5b9efcf25ea8b618fd6a01521a6
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-<<<<<<< HEAD
   background-color: white;
-=======
-  background-color: #333;
-  color: white;
->>>>>>> f7a53161d751d5b9efcf25ea8b618fd6a01521a6
 }
 
 .logo img {
