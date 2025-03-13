@@ -1,6 +1,6 @@
 <template>
     <div class="main">
-      <p1>ТУТ МОЖЕТ БЫТЬ ВАША РЕКЛАМА</p1>
+      <router-link to="/advertising"><img src="@/assets/Advertising baner.svg" alt="Тут могла быть ваша реклама"></router-link>
     </div>
 </template>
 

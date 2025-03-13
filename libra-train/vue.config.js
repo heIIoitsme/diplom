@@ -7,14 +7,16 @@ module.exports = defineConfig({
     open: true, // Открыть в браузере автоматически
   },
   chainWebpack: (config) => {
+    // Удаляем стандартное правило для шрифтов
+    config.module.rules.delete('fonts')
+
+    // Добавляем новое правило с использованием asset modules
     config.module
       .rule('fonts')
-      .test(/\.(woff2?|eot|ttf|otf)(\?.*)?$/)
-      .use('url-loader')
-      .loader('url-loader')
-      .options({
-        limit: 10000,
-        name: 'fonts/[name].[hash:7].[ext]',
-      });
+      .test(/\.(woff2?|eot|ttf|otf)(\?.*)?$/i)
+      .type('asset/resource')
+      .set('generator', {
+        filename: 'fonts/[name][ext][query]' // Формат имени файла
+      })
   },
 });

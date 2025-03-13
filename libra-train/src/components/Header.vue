@@ -1,7 +1,7 @@
 <template>
   <header class="header">
     <div class="logo">
-      <img src="@/assets/LibraTrain.png" alt="Логотип" >
+      <router-link to="/"><img src="@/assets/LibraTrain.svg" alt="Логотип" ></router-link>
     </div>
     <nav class="nav">
       <router-link to="/">Главная</router-link>

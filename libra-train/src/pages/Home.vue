@@ -1,15 +1,18 @@
 <template>
   <div class="home">
     <Announcer />
+    <Bookcard />
   </div>
 </template>
 
 <script>
 import Announcer from '@/components/Announcer.vue';
+import Bookcard from '@/components/Book-card.vue';
 export default {
   name: 'Home',
   components: {
     Announcer,
+    Bookcard,
   },
 };
 </script>
