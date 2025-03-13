@@ -78,6 +78,9 @@ export default {
   align-items: center;
   text-decoration: underline;
 }
+.statename:hover {
+  color:red
+}
 .ratingname {
   font-family: 'Kreadon';
   font-size: 20px;
