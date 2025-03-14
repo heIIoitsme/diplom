@@ -1,14 +1,18 @@
 <template>
   <div class="card_container">
-    <img class="image" src="@/assets/image container.svg" alt="missed image" />
+    <img 
+      class="image" 
+      :src="require(`@/assets/covers/${book.cover}`)" 
+      :alt="book.title"
+    />
     <div class="text_container">
       <div class="cardheader">
-        <nameText class="bookname">Vita Nostra: Работа над ошибками</nameText>
-        <authorText class="authorname">Харуки Мураками</authorText>
+        <nameText class="bookname">{{ book.title }}</nameText>
+        <authorText class="authorname">{{ book.author }}</authorText>
       </div>
       <div class="cardfooter">
-        <stateText class="statename">Не прочитано</stateText>
-        <ratingText class="ratingname">4,6</ratingText>
+        <stateText class="statename">{{ book.status }}</stateText>
+        <ratingText class="ratingname">{{ formattedRating }}</ratingText>
       </div>
     </div>
   </div>
@@ -16,8 +20,19 @@
 
 <script>
 export default {
-  name: 'Bookcard',
-};
+  name: 'BookCard',
+  props: {
+    book: {
+      type: Object,
+      required: true
+    }
+  },
+  computed: {
+    formattedRating() {
+      return this.book.rating?.toFixed(1).replace('.', ',') || '0,0'
+    }
+  }
+}
 </script>
 
 <style scoped>
@@ -37,7 +52,7 @@ export default {
 }
 .text_container {
   width: 130px;
-  height: 285px;
+  height: 260px;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
@@ -65,11 +80,11 @@ export default {
   font-size: 14px;
   color: #252525;
   margin: 0px 5px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: 4;
+	-webkit-box-orient: vertical;
 }
 .statename {
   font-family: 'Kreadon';
@@ -77,6 +92,7 @@ export default {
   display: flex;
   align-items: center;
   text-decoration: underline;
+  cursor: default;
 }
 .statename:hover {
   color:red

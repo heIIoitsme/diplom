@@ -5,8 +5,6 @@
     </div>
     <nav class="nav">
       <router-link to="/">Главная</router-link>
-      <router-link to="/about">О нас</router-link>
-      <router-link to="/contact">Контакты</router-link>
     </nav>
   </header>
 </template>
@@ -19,16 +17,12 @@ export default {
 
 <style scoped>
 .header {
-  height: 80px;
+  height: 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
   background-color: white;
-}
-
-.logo img {
-  height: 50px;
 }
 
 .nav a {

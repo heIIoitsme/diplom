@@ -1,20 +1,26 @@
 <template>
   <div class="home">
     <Announcer />
-    <Bookcard />
+    <Recomendations />
+    <Categories />
   </div>
 </template>
 
 <script>
 import Announcer from '@/components/Announcer.vue';
-import Bookcard from '@/components/Book-card.vue';
+import Recomendations from '@/components/Recomendations.vue';
+import Categories from '@/components/Categories.vue';
+
 export default {
   name: 'Home',
   components: {
     Announcer,
-    Bookcard,
+    Recomendations,
+    Categories,
   },
 };
+
+
 </script>
 
 <style scoped>
