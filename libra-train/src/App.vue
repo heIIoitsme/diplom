@@ -26,9 +26,8 @@ body {
 
 @font-face {
   font-family: 'Kreadon';
-  src: local('Kreadon Medium'), local('Kreadon-Medium'),
-    url('./assets/fonts/Kreadon-Medium.woff') format('woff'),
-    url('./assets/fonts/Kreadon-Medium.woff2') format('woff2');
+  src: url('./assets/fonts/Kreadon-Medium.woff') format('woff'),
+       url('./assets/fonts/Kreadon-Medium.woff2') format('woff2');
   font-weight: 500; /* Medium обычно соответствует 500 */
   font-style: normal;
   font-display: auto;

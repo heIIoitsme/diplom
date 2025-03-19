@@ -30,15 +30,20 @@
         </div>
       </div>
     </div>
+    <button class="loginButton" @click="showLoginModal = true"><a>Войти</a></button>
 
-    <nav class="nav">
-      <router-link to="/">Главная</router-link>
-    </nav>
+    <LoginModal
+      v-if="showLoginModal"
+      @close="showLoginModal = false"
+      @submit="handleLogin"
+    />
+
   </header>
 </template>
 
 <script>
 import books from '@/database/books.json'
+import LoginModal from '@/components/LoginModal.vue'
 
 export default {
   name: 'Header',
@@ -46,7 +51,12 @@ export default {
     return {
       searchQuery: '',
       showDropdown: false,
-      allBooks: books
+      allBooks: books,
+      showLoginModal: false,
+      loginData: {
+        username: '',
+        password: ''
+      }
     }
   },
   computed: {
@@ -58,8 +68,8 @@ export default {
         return (
           book.title.toLowerCase().includes(query) ||
           (book.author && book.author.toLowerCase().includes(query))
-        ).slice(0, 5) // Показываем первые 5 результатов
-      })
+        )
+      }).slice(0, 5) // Показываем первые 5 результатов
     }
   },
   methods: {
@@ -84,6 +94,18 @@ export default {
     
     closeDropdown() {
       this.showDropdown = false
+    },
+    
+    closeLoginModal() {
+      this.showLoginModal = false
+      this.loginData.username = ''
+      this.loginData.password = ''
+    },
+    
+    handleLogin() {
+      // Здесь можно добавить логику для обработки входа
+      console.log('Login data:', this.loginData)
+      this.closeLoginModal()
     }
   },
   directives: {
@@ -100,30 +122,32 @@ export default {
         document.removeEventListener('click', el.clickOutsideEvent)
       }
     }
-  }
+  },
+  components: {
+    LoginModal
+  },
 }
 </script>
 
 <style scoped>
 .header {
   width: 100%;
-  height: 60px; /* Увеличиваем высоту для лучшего визуального восприятия */
+  height: 60px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 1rem;
   background-color: white;
   position: sticky;
   top: 0;
   z-index: 1000;
 }
 .search-container {
-  flex: 1 1 640px; /* Основной растягивающийся элемент */
+  flex: 1 1 640px;
   width: 640px;
   margin: 0 auto;
-  position: absolute; /* Позволяет обеспечить фиксированное положение */
+  position: absolute;
   left: 50%;
-  transform: translateX(-50%)
+  transform: translateX(-50%);
 }
 
 .search-container input {
@@ -197,6 +221,64 @@ export default {
 
 .nav a:hover {
   text-decoration: underline;
+}
+
+.loginButton {
+  width: 120px;
+  height: 30px;
+  background-color: black;
+  border-radius: 15px;
+  margin-right: 30px;
+  box-shadow: 0px 3px 0px 0px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.loginButton a {
+  color: rgb(255, 255, 255);
+  font-family: Kreadon;
+  font-size: 20px;
+  position: relative;
+  z-index: 1;
+  transition: color 0.15s;
+}
+
+/* Эффект при наведении */
+.loginButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0px 5px 0px 0px rgba(0, 0, 0, 0.25);
+}
+
+/* Эффект при нажатии */
+.loginButton:active {
+  transform: translateY(3px);
+  box-shadow: 0px 1px 0px 0px rgba(0, 0, 0, 0.25);
+  background-color: #333;
+}
+
+/* Дополнительный эффект "волны" при клике */
+.loginButton::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s, height 0.3s;
+}
+
+.loginButton:active::after {
+  width: 200px;
+  height: 200px;
+}
+
+.logo {
+  margin-left: 30px;
 }
 
 /* Адаптивность */
