@@ -73,13 +73,13 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   word-break: break-all;
-  margin: 0px 5px;
+  margin: 0px 8px;
 }
 .authorname {
   font-family: 'Kreadon';
   font-size: 14px;
   color: #252525;
-  margin: 0px 5px;
+  margin: 0px 8px;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	display: -webkit-box;
@@ -88,7 +88,7 @@ export default {
 }
 .statename {
   font-family: 'Kreadon';
-  font-size: 11px;
+  font-size: 12px;
   display: flex;
   align-items: center;
   text-decoration: underline;

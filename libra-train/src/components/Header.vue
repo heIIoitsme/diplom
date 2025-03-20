@@ -166,6 +166,12 @@ export default {
   outline: none;
   box-shadow: inset 0px 2px 5px 0px rgba(0, 0, 0, 0.65);
 }
+.search-container input::placeholder {
+  color: grey;
+}
+.search-container input:focus::placeholder {
+  color: #b8b8b8;
+}
 
 .search-dropdown {
   position: absolute;
