@@ -2,6 +2,7 @@
   <div class="home">
     <Announcer />
     <Recomendations />
+    <NewsBanner />
     <Categories />
   </div>
 </template>
@@ -10,12 +11,14 @@
 import Announcer from '@/components/Announcer.vue';
 import Recomendations from '@/components/Recomendations.vue';
 import Categories from '@/components/Categories.vue';
+import NewsBanner from '@/components/NewsBanner.vue'
 
 export default {
   name: 'Home',
   components: {
     Announcer,
     Recomendations,
+    NewsBanner,
     Categories,
   },
 };
