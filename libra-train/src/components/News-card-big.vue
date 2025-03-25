@@ -1,5 +1,5 @@
 <template>
-    <div class="card_container">
+    <router-link :to="`/news/${news.slug}`"><div class="card_container">
         <img 
         class="image" 
         :src="require(`@/assets/covers/${news.cover}`)" 
@@ -11,7 +11,7 @@
         <div class="text_container">
             <nameText class="newsname">{{ news.title }}</nameText>
         </div>
-    </div>
+    </div></router-link>
   </template>
   
   <script>
@@ -47,6 +47,7 @@
     font-size: 24px;
     color: #000000;
     z-index: 2;
+    text-shadow: #fff 0px 0px 15px, #fff 0px 0px 15px, #fff 0px 0px 20px, #fff 0px 0px 20px;
   }
   .image {
     width: 100%;

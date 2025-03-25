@@ -1,5 +1,5 @@
 <template>
-    <div class="card_container">
+    <router-link :to="`/news/${news.slug}`"><div class="card_container">
         <img
         class="filter" 
         :src="require(`@/assets/filters/horiz-white.svg`)" 
@@ -11,7 +11,7 @@
         <div class="text_container">
             <nameText class="newsname">{{ news.title }}</nameText>
         </div>
-    </div>
+    </div></router-link>
   </template>
   
   <script>
@@ -53,7 +53,7 @@
     object-fit: cover;
     position: absolute;
     z-index: 0;
-    filter: blur(2px)
+    filter: blur(2px);
   }
   .filter {
     width: 100%;

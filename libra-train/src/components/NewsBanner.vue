@@ -1,6 +1,6 @@
 <template>
     <div class="fullmodule">
-        <span class="headline"> Последние новости </span>
+        <span class="headline"> Статьи и новости </span>
         <div class ='news-container'>
             <div v-if="newses.length" class="news-big-grid">
             <NewsBigCard 
