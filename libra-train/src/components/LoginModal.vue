@@ -1,62 +1,141 @@
 <template>
-    <div class="modal-overlay" @click="close">
-      <div class="login-modal" @click.stop>
-        <div class="modal-header">
-          <h2>Вход</h2>
-          <button class="close-modal" @click="close">
-            <span class="close-icon"></span>
-          </button>
-        </div>
-        <form @submit.prevent="submit">
-          <div class="form-group">
-            <input
-              type="text"
-              v-model="formData.username"
-              placeholder="Логин"
-              required
-              class="form-input"
-            >
-          </div>
-          <div class="form-group">
-            <input
-              type="password"
-              v-model="formData.password"
-              placeholder="Пароль"
-              required
-              class="form-input"
-            >
-          </div>
-          <button type="submit" class="submit-btn">Войти</button>
-        </form>
-        <p class="register-text">
-          Нет аккаунта? 
-          <router-link to="/register" class="register-link" @click="close">Зарегистрироваться</router-link>
-        </p>
+  <div class="modal-overlay" @mousedown="close">
+    <div class="login-modal" @mousedown.stop>
+      <div class="modal-header">
+        <h2>Вход</h2>
+        <button class="close-modal" @click="close">
+          <span class="close-icon"></span>
+        </button>
       </div>
+      <form @submit.prevent="submit">
+        <div class="form-group">
+          <input
+            type="text"
+            v-model.trim="formData.username"
+            @input="validateUsername"
+            placeholder="Логин"
+            required
+            class="form-input"
+            :class="{ 'input-error': invalidFields.username }"
+            autocomplete="off"
+          >
+          <div v-if="errors.username" class="error-message">{{ errors.username }}</div>
+        </div>
+        
+        <div class="form-group">
+          <input
+            type="password"
+            v-model.trim="formData.password"
+            @input="validatePassword"
+            placeholder="Пароль"
+            required
+            class="form-input"
+            :class="{ 'input-error': invalidFields.password }"
+            autocomplete="new-password"
+          >
+          <div v-if="errors.password" class="error-message">{{ errors.password }}</div>
+        </div>
+        
+        <button type="submit" class="submit-btn" :disabled="!isFormValid">Войти</button>
+      </form>
+      <p class="register-text">
+        Нет аккаунта? 
+        <router-link to="/register" class="register-link" @click="close">Зарегистрироваться</router-link>
+      </p>
     </div>
-  </template>
-  
-  <script>
-  export default {
-    data() {
-      return {
-        formData: {
-          username: '',
-          password: ''
-        }
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      formData: {
+        username: '',
+        password: ''
+      },
+      errors: {
+        username: '',
+        password: ''
+      },
+      invalidFields: {
+        username: false,
+        password: false
+      }
+    }
+  },
+  computed: {
+    isFormValid() {
+      return Object.values(this.errors).every(error => error === '') && 
+             this.formData.username && 
+             this.formData.password
+    }
+  },
+  methods: {
+    close() {
+      this.$emit('close')
+    },
+    
+    validateUsername() {
+      const value = this.sanitizeInput(this.formData.username)
+      this.formData.username = value
+      
+      if (!value) {
+        this.errors.username = 'Логин обязателен'
+        this.invalidFields.username = true
+      } else if (value.length < 3) {
+        this.errors.username = 'Логин должен быть не менее 3 символов'
+        this.invalidFields.username = true
+      } else if (!/^[a-zA-Z0-9_]+$/.test(value)) {
+        this.errors.username = 'Можно использовать только латинские буквы, цифры и подчеркивание'
+        this.invalidFields.username = true
+      } else {
+        this.errors.username = ''
+        this.invalidFields.username = false
       }
     },
-    methods: {
-      close() {
-        this.$emit('close')
-      },
-      submit() {
-        this.$emit('submit', this.formData)
+    
+    validatePassword() {
+      const value = this.formData.password
+      
+      if (!value) {
+        this.errors.password = 'Пароль обязателен'
+        this.invalidFields.password = true
+      } else if (value.length < 6) {
+        this.errors.password = 'Пароль должен быть не менее 6 символов'
+        this.invalidFields.password = true
+      } else {
+        this.errors.password = ''
+        this.invalidFields.password = false
+      }
+    },
+    
+    sanitizeInput(input) {
+      return input
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+        .replace(/&/g, '&amp;')
+    },
+    
+    submit() {
+      this.validateUsername()
+      this.validatePassword()
+      
+      if (this.isFormValid) {
+        const sanitizedData = {
+          username: this.sanitizeInput(this.formData.username),
+          password: this.formData.password // Пароль не экранируем специально
+        }
+        this.$emit('submit', sanitizedData)
         this.formData = { username: '', password: '' }
       }
     }
   }
-  </script>
+}
+</script>
+
   
   <style scoped>
 
@@ -225,5 +304,21 @@
   
   .register-link:hover {
     text-decoration: underline;
+  }
+
+  .error-message {
+  color: #dc3545;
+  font-size: 0.85rem;
+  margin-top: 5px;
+  font-family: 'Kreadon';
+  }
+
+.input-error {
+  border-color: #dc3545 !important;
+  background-color: #fff5f5;
+  }
+
+.input-error:focus {
+  box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.25) !important;
   }
   </style>

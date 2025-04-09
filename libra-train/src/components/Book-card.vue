@@ -2,7 +2,8 @@
   <div class="card_container">
     <img 
       class="image" 
-      :src="require(`@/assets/covers/${book.cover}`)" 
+      :src="require(`@/assets/covers/${book.cover}`)"
+      loading="lazy" 
       :alt="book.title"
     />
     <div class="text_container">
@@ -49,6 +50,10 @@ export default {
   display: flex;
   z-index: 1;
   flex-direction: column;
+  transition: transform 0.3s ease;
+}
+.card_container:hover {
+  transform: translateY(-3px);
 }
 .text_container {
   width: 130px;

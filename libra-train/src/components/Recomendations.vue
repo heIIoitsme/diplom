@@ -1,6 +1,6 @@
 <template>
     <div class="fullmodule">
-        <span class="headline"> Рекомендации </span>
+      <router-link :to="`/book/`" class="router-link-custom"><span class="headline"> Рекомендации </span></router-link>
             <div v-if="books.length" class="books-grid">
             <BookCard 
                 v-for="book in books.slice(0, 7)" 
@@ -43,10 +43,15 @@
   .headline {
     font-family: 'Kreadon';
     font-size: 40px;
+    color: black;
   }
   .fullmodule {
     display: flex;
     flex-direction: column;
     gap:10px;
+  }
+  .router-link-custom{
+    text-decoration: none;
+    display: inline-block;
   }
   </style>

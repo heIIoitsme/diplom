@@ -1,6 +1,6 @@
 <template>
     <div class="fullmodule">
-        <span class="headline"> Статьи и новости </span>
+      <router-link :to="`/news/$`" class="router-link-custom"><span class="headline"> Статьи и новости </span></router-link>
         <div class ='news-container'>
             <div v-if="newses.length" class="news-big-grid">
             <NewsBigCard 
@@ -64,10 +64,15 @@
   .headline {
     font-family: 'Kreadon';
     font-size: 40px;
+    color: black;
   }
   .fullmodule {
     display: flex;
     flex-direction: column;
     gap:10px;
+  }
+  .router-link-custom{
+    text-decoration: none;
+    display: inline-block;
   }
   </style>

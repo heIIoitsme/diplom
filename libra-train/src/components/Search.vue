@@ -8,7 +8,7 @@
             :key="book._id"
             class="book-item"
           >
-            <router-link :to="`/books/${book._id}`">
+            <router-link :to="`/books/${book.slug}`">
               {{ book.title }}
             </router-link>
             <p class="author">{{ book.author }}</p>

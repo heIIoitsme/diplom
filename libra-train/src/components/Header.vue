@@ -173,6 +173,7 @@ export default {
   color: #b8b8b8;
 }
 
+
 .search-dropdown {
   position: absolute;
   top: 100%;

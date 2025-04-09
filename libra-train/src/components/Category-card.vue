@@ -1,12 +1,13 @@
 <template>
-  <div class="card_container">
+  <router-link :to="`/category/${category.slug}`" class="router-link-custom"><div class="card_container">
       <img 
         class="image" 
-        :src="require(`@/assets/categories/${category.cover}`)" 
+        :src="require(`@/assets/categories/${category.cover}`)"
+        loading="lazy" 
         :alt="category.title"
       />
       <nameText class="categoryname">{{ category.title }}</nameText>
-  </div>
+  </div></router-link>
 </template>
   
   <script>
@@ -26,6 +27,7 @@
     font-family: 'Kreadon';
     font-size: clamp(1rem, 9vw, 1.5rem); /* Минимальный размер 1rem, максимальный 2rem */
     text-align: center;
+    color: #000000;
     z-index: 2;
     width: 150px;
   }
@@ -37,9 +39,17 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    transition: transform 0.3s ease;
+  }
+  .card_container:hover {
+  transform: translateY(-3px);
   }
   .card_container img {
     position: absolute;
     z-index: 1;
+  }
+  .router-link-custom {
+  text-decoration: none;
+  display: inline-block;
   }
   </style>

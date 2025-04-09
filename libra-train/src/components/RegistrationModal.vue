@@ -132,12 +132,10 @@ export default {
   display: flex;
   flex-direction: column;
   padding: 10px;
-  gap: 30px;
 }
 .form-group input {
   width: 100%;
   padding: 10px;
-  margin-bottom: 10px;
   border: 1px solid #ddd;
   border-radius: 15px;
   box-sizing: border-box;

@@ -1,6 +1,6 @@
 <template>
     <div class="fullmodule">
-        <span class="headline"> Категории </span>
+      <router-link :to="`/category/`" class="router-link-custom"><span class="headline"> Категории </span></router-link>
             <div v-if="categories.length" class="rec-grid">
             <CategoryCard
                 v-for="category in categories.slice(0, 7)" 
@@ -44,10 +44,15 @@ import CategoryCard from '@/components/Category-card.vue'
   .headline {
     font-family: 'Kreadon';
     font-size: 40px;
+    color: black;
   }
   .fullmodule {
     display: flex;
     flex-direction: column;
     gap:10px;
+  }
+  .router-link-custom{
+    text-decoration: none;
+    display: inline-block;
   }
   </style>

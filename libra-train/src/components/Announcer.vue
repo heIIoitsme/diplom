@@ -1,6 +1,6 @@
 <template>
-    <div class="main">
-      <router-link to="/advertising"><img src="@/assets/Advertising baner.svg" alt="Тут могла быть ваша реклама"></router-link>
+    <div class="banner">
+      <router-link to="/advertising"><img src="@/assets/Advertising baner.svg" loading="lazy" alt="Тут могла быть ваша реклама"></router-link>
     </div>
 </template>
 
@@ -11,7 +11,7 @@ export default {
 </script>
 
 <style scoped>
-.main {
+.banner {
     background-color: white;
     width: 100%; /* Ширина блока */
     max-width: 1240px;
@@ -21,10 +21,27 @@ export default {
     box-shadow: 0px 15px 15px -10px rgba(0, 0, 0, 0.25);
 }
 
+@media (max-width: 992px) {
+  .banner {
+    width: 95%;
+    aspect-ratio: 3 / 1;
+    border-radius: 15px;
+  }
+}
+
 @media (max-width: 768px) {
-  .main {
-    height: 150px;
-    max-width: 460px;
+  .banner {
+    aspect-ratio: 2 / 1;
+    margin: 15px auto;
+    border-radius: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .banner {
+    aspect-ratio: 1.5 / 1;
+    border-radius: 10px;
+    box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.25);
   }
 }
 </style>

@@ -2,11 +2,13 @@
     <router-link :to="`/news/${news.slug}`"><div class="card_container">
         <img 
         class="image" 
-        :src="require(`@/assets/covers/${news.cover}`)" 
+        :src="require(`@/assets/covers/${news.cover}`)"
+        loading="lazy" 
         />
         <img
         class="filter" 
-        :src="require(`@/assets/filters/radial-white.svg`)" 
+        :src="require(`@/assets/filters/radial-white.svg`)"
+        loading="lazy" 
         />
         <div class="text_container">
             <nameText class="newsname">{{ news.title }}</nameText>
