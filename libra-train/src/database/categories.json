@@ -3,48 +3,48 @@
         "_id": "1",
         "title": "Драма",
         "slug": "drama",
-        "cover": "drama.svg"
+        "cover": "drama.jpeg"
     },
     {
         "_id": "2",
         "title": "Фантастика",
         "slug": "science-fiction",
-        "cover": "science_fiction.svg"
+        "cover": "science_fiction.jpeg"
       },
       {
         "_id": "3",
         "title": "Детектив",
         "slug": "detective",
-        "cover": "detective.svg"
+        "cover": "detective.jpeg"
       },
       {
         "_id": "4",
         "title": "Поэзия",
         "slug": "poetry",
-        "cover": "poetry.svg"
+        "cover": "poetry.jpeg"
       },
       {
         "_id": "5",
         "title": "Фэнтези",
         "slug": "fantasy",
-        "cover": "fantasy.svg"
+        "cover": "fantasy.jpeg"
       },
       {
         "_id": "6",
         "title": "Ужасы",
         "slug": "horror",
-        "cover": "horror.svg"
+        "cover": "horror.jpeg"
       },
       {
         "_id": "7",
         "title": "Детские книги",
         "slug": "child",
-        "cover": "child.svg"
+        "cover": "child.jpeg"
       },
       {
         "_id": "8",
         "title": "Че нибудь",
         "slug": "che-nibud",
-        "cover": "che-nibud.svg"
+        "cover": "che-nibud.jpeg"
       }
   ]
