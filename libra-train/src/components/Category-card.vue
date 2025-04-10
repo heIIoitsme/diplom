@@ -34,7 +34,7 @@
   .card_container {
     width: 155px;
     height: 300px;
-    border-radius: 10px;
+    border-radius: 30px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -46,6 +46,9 @@
   }
   .card_container img {
     position: absolute;
+    width: 155px;
+    height: 300px;
+    border-radius: 30px;
     z-index: 1;
   }
   .router-link-custom {

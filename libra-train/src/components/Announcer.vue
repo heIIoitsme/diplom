@@ -1,6 +1,6 @@
 <template>
     <div class="banner">
-      <router-link to="/advertising"><img src="@/assets/Advertising baner.svg" loading="lazy" alt="Тут могла быть ваша реклама"></router-link>
+      <router-link to="/advertising"><img src="@/assets/AdvertisingBaner.svg" loading="lazy" alt="Тут могла быть ваша реклама"></router-link>
     </div>
 </template>
 
