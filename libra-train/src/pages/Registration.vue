@@ -13,8 +13,6 @@
         RegistrationModal,
     },
   };
-  
-  
   </script>
   
   <style scoped>

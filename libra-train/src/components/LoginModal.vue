@@ -67,69 +67,71 @@ export default {
   computed: {
     isFormValid() {
       return Object.values(this.errors).every(error => error === '') && 
-             this.formData.username && 
-             this.formData.password
+             this.formData.username.trim() && 
+             this.formData.password.trim()
     }
   },
   methods: {
     close() {
       this.$emit('close')
     },
-    
+
     validateUsername() {
-      const value = this.sanitizeInput(this.formData.username)
-      this.formData.username = value
-      
-      if (!value) {
-        this.errors.username = 'Логин обязателен'
-        this.invalidFields.username = true
-      } else if (value.length < 3) {
-        this.errors.username = 'Логин должен быть не менее 3 символов'
-        this.invalidFields.username = true
-      } else if (!/^[a-zA-Z0-9_]+$/.test(value)) {
-        this.errors.username = 'Можно использовать только латинские буквы, цифры и подчеркивание'
-        this.invalidFields.username = true
+      const rawValue = this.formData.username
+      // Санитизация: удаляем запрещенные символы и обрезаем пробелы
+      const cleanValue = rawValue
+        .trim()
+        .replace(/[<>"'&/\\]/g, '')
+        .replace(/\s+/g, '');
+
+      // Обновляем значение только если оно изменилось
+      if (cleanValue !== rawValue) {
+        this.formData.username = cleanValue;
+      }
+
+      // Валидация
+      if (!cleanValue) {
+        this.errors.username = 'Логин обязателен';
+        this.invalidFields.username = true;
+      } else if (cleanValue.length < 3) {
+        this.errors.username = 'Логин должен быть не менее 3 символов';
+        this.invalidFields.username = true;
+      } else if (!/^[a-zA-Z0-9_]+$/.test(cleanValue)) {
+        this.errors.username = 'Можно использовать только буквы, цифры и подчеркивание';
+        this.invalidFields.username = true;
       } else {
-        this.errors.username = ''
-        this.invalidFields.username = false
+        this.errors.username = '';
+        this.invalidFields.username = false;
       }
     },
-    
+
     validatePassword() {
-      const value = this.formData.password
+      const value = this.formData.password.trim();
       
       if (!value) {
-        this.errors.password = 'Пароль обязателен'
-        this.invalidFields.password = true
+        this.errors.password = 'Пароль обязателен';
+        this.invalidFields.password = true;
       } else if (value.length < 6) {
-        this.errors.password = 'Пароль должен быть не менее 6 символов'
-        this.invalidFields.password = true
+        this.errors.password = 'Пароль должен быть не менее 6 символов';
+        this.invalidFields.password = true;
       } else {
-        this.errors.password = ''
-        this.invalidFields.password = false
+        this.errors.password = '';
+        this.invalidFields.password = false;
       }
     },
-    
-    sanitizeInput(input) {
-      return input
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;')
-        .replace(/&/g, '&amp;')
-    },
-    
+
     submit() {
-      this.validateUsername()
-      this.validatePassword()
-      
+      // Финализируем проверки перед отправкой
+      this.validateUsername();
+      this.validatePassword();
+
       if (this.isFormValid) {
         const sanitizedData = {
-          username: this.sanitizeInput(this.formData.username),
-          password: this.formData.password // Пароль не экранируем специально
-        }
-        this.$emit('submit', sanitizedData)
-        this.formData = { username: '', password: '' }
+          username: this.formData.username,
+          password: this.formData.password
+        };
+        this.$emit('submit', sanitizedData);
+        this.formData = { username: '', password: '' };
       }
     }
   }
