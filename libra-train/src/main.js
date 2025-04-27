@@ -1,6 +1,17 @@
 import { createApp } from 'vue'
 import App from './App.vue'
 import router from '@/router/router.js'
-import 'dotenv/config'
+import Notifications from '@kyvg/vue3-notification'
 
-createApp(App).use(router).mount('#app')
+// Инициализация приложения
+const app = createApp(App)
+
+// Глобальная обработка ошибок
+app.config.errorHandler = (err) => {
+  console.error('Global error:', err)
+}
+
+app
+  .use(router)
+  .use(Notifications)
+  .mount('#app')

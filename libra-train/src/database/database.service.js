@@ -11,7 +11,7 @@ class DatabaseService {
     if (this.isConnected) return this.db;
     
     try {
-      this.client = new MongoClient(process.env.MONGODB_URI, {
+      this.client = new MongoClient(process.env.VUE_APP_MONGODB_URI, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         maxPoolSize: 10,
@@ -19,7 +19,7 @@ class DatabaseService {
       });
 
       await this.client.connect();
-      this.db = this.client.db(process.env.DB_NAME);
+      this.db = this.client.db(process.env.VUE_APP_DB_NAME);
       this.isConnected = true;
       console.log('✅ MongoDB connected');
       return this.db;
@@ -34,14 +34,45 @@ class DatabaseService {
     return this.db.collection(collectionName);
   }
 
-  async find(collectionName, query = {}, projection = {}, sort = {}, limit = 0) {
+  async find(collectionName, query = {}, options = {}) {
+    const {
+      projection = {},
+      sort = {},
+      limit = 0,
+      populate = [] // массив полей для "популяции"
+    } = options;
+  
     try {
       const collection = await this.getCollection(collectionName);
+  
+      // Если есть populate — используем aggregate
+      if (populate.length > 0) {
+        const pipeline = [
+          { $match: query },
+          ...populate.map(field => ({
+            $lookup: {
+              from: field.from,            // Название коллекции
+              localField: field.localField, // Поле в основной коллекции
+              foreignField: field.foreignField, // Поле в связанной коллекции
+              as: field.as                  // Куда положить результат
+            }
+          })),
+          { $sort: sort },
+          ...(limit > 0 ? [{ $limit: limit }] : []),
+          ...(Object.keys(projection).length ? [{ $project: projection }] : [])
+        ];
+  
+        const result = await collection.aggregate(pipeline).toArray();
+        return result;
+      }
+  
+      // Если populate не указан — обычный find
       return await collection.find(query)
         .project(projection)
         .sort(sort)
         .limit(limit)
         .toArray();
+  
     } catch (error) {
       console.error('Find error:', error);
       throw error;
@@ -88,6 +119,17 @@ class DatabaseService {
       console.log('MongoDB connection closed');
     }
   }
+
+  async findOne(collectionName, query) {
+    try {
+      const collection = await this.getCollection(collectionName);
+      return await collection.findOne(query);
+    } catch (error) {
+      console.error('FindOne error:', error);
+      throw error;
+    }
+  }
 }
+
 
 export const dbService = new DatabaseService();

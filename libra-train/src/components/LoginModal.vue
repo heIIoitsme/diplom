@@ -120,20 +120,45 @@ export default {
       }
     },
 
-    submit() {
-      // Финализируем проверки перед отправкой
-      this.validateUsername();
-      this.validatePassword();
+    async submit() {
+  this.validateUsername();
+  this.validatePassword();
 
-      if (this.isFormValid) {
-        const sanitizedData = {
-          username: this.formData.username,
-          password: this.formData.password
-        };
-        this.$emit('submit', sanitizedData);
+  if (this.isFormValid) {
+    const sanitizedData = {
+      username: this.formData.username,
+      password: this.formData.password
+    };
+
+    try {
+      const response = await fetch('http://localhost:3000/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(sanitizedData)
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        // Успешная авторизация
+        console.log('Авторизация успешна', result);
+        // Можно сохранить токен или ID пользователя
+        // Например: localStorage.setItem('userId', result.userId);
+        this.$emit('login-success', result);
         this.formData = { username: '', password: '' };
+      } else {
+        // Ошибка от сервера
+        this.errorMessage = result.error || 'Ошибка авторизации';
       }
+
+    } catch (error) {
+      console.error('Ошибка при отправке запроса:', error);
+      this.errorMessage = 'Ошибка сервера. Попробуйте позже.';
     }
+  }
+  }
   }
 }
 </script>

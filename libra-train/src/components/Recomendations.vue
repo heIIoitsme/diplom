@@ -13,6 +13,7 @@
   
   <script>
   import BookCard from '@/components/Book-card.vue'
+  import axios from 'axios'
   
   export default {
     name: 'Recomendations',
@@ -24,8 +25,8 @@
     },
     async created() {
       try {
-        const response = await import('@/database/books.json')
-        this.books = response.default
+        const response = await axios.get(`${process.env.VUE_APP_API_URL}/api/books`); 
+        this.books = response.data
       } catch (error) {
         console.error('Ошибка загрузки книг:', error)
       }

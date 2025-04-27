@@ -23,6 +23,7 @@
   <script>
   import NewsBigCard from '@/components/News-card-big.vue'
   import NewsSmallCard from '@/components/News-card-small.vue'
+  import axios from 'axios'
   
   export default {
     name: 'NewsBanner',
@@ -34,8 +35,8 @@
     },
     async created() {
       try {
-        const response = await import('@/database/news.json')
-        this.newses = response.default
+        const response = await axios.get(`${process.env.VUE_APP_API_URL}/api/news`); 
+        this.newses = response.data
       } catch (error) {
         console.error('Ошибка загрузки новостей', error)
       }

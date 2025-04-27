@@ -9,7 +9,7 @@
     <div class="text_container">
       <div class="cardheader">
         <nameText class="bookname">{{ book.title }}</nameText>
-        <authorText class="authorname">{{ book.author }}</authorText>
+        <authorText class="authorname">{{ book.author[0].fullName }}</authorText>
       </div>
       <div class="cardfooter">
         <stateText class="statename">{{ book.status }}</stateText>

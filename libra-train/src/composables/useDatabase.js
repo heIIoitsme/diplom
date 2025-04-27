@@ -1,18 +1,18 @@
 import { dbService } from '../database/database.service';
 
 export const useDatabase = () => {
-  const getUsers = async () => {
+  const getUser = async () => {
     try {
-      return await dbService.find('users', {}, { _id: 0, password: 0 });
+      return await dbService.find('user', {}, { _id: 0, password: 0 });
     } catch (error) {
-      console.error('Failed to fetch users:', error);
+      console.error('Failed to fetch user:', error);
       return [];
     }
   };
 
   const createUser = async (userData) => {
     try {
-      return await dbService.insert('users', userData);
+      return await dbService.insert('user', userData);
     } catch (error) {
       console.error('Failed to create user:', error);
       throw error;
@@ -20,7 +20,7 @@ export const useDatabase = () => {
   };
 
   return {
-    getUsers,
+    getUser,
     createUser
   };
 };

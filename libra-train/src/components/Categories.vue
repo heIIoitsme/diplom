@@ -14,6 +14,7 @@
   <script>
 
 import CategoryCard from '@/components/Category-card.vue'
+import axios from 'axios';
   
   export default {
     name: 'Categories',
@@ -25,8 +26,8 @@ import CategoryCard from '@/components/Category-card.vue'
     },
     async created() {
       try {
-        const response = await import('@/database/categories.json')
-        this.categories = response.default
+        const response = await axios.get(`${process.env.VUE_APP_API_URL}/api/genres`); 
+        this.categories = response.data
       } catch (error) {
         console.error('Ошибка загрузки книг:', error)
       }
