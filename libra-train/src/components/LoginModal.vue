@@ -48,6 +48,7 @@
 
 <script>
 export default {
+  name: 'LoginModal',
   data() {
     return {
       formData: {
@@ -61,42 +62,35 @@ export default {
       invalidFields: {
         username: false,
         password: false
-      }
-    }
+      },
+      errorMessage: ''
+    };
   },
   computed: {
     isFormValid() {
-      return Object.values(this.errors).every(error => error === '') && 
-             this.formData.username.trim() && 
-             this.formData.password.trim()
+      return (
+        Object.values(this.errors).every(e => e === '') &&
+        this.formData.username.trim() &&
+        this.formData.password.trim()
+      );
     }
   },
   methods: {
     close() {
-      this.$emit('close')
+      this.$emit('close');
     },
-
     validateUsername() {
-      const rawValue = this.formData.username
-      // Санитизация: удаляем запрещенные символы и обрезаем пробелы
-      const cleanValue = rawValue
-        .trim()
-        .replace(/[<>"'&/\\]/g, '')
-        .replace(/\s+/g, '');
+      const raw = this.formData.username;
+      const clean = raw.trim().replace(/[<>"'&/\\]/g, '').replace(/\s+/g, '');
+      if (clean !== raw) this.formData.username = clean;
 
-      // Обновляем значение только если оно изменилось
-      if (cleanValue !== rawValue) {
-        this.formData.username = cleanValue;
-      }
-
-      // Валидация
-      if (!cleanValue) {
+      if (!clean) {
         this.errors.username = 'Логин обязателен';
         this.invalidFields.username = true;
-      } else if (cleanValue.length < 3) {
+      } else if (clean.length < 3) {
         this.errors.username = 'Логин должен быть не менее 3 символов';
         this.invalidFields.username = true;
-      } else if (!/^[a-zA-Z0-9_]+$/.test(cleanValue)) {
+      } else if (!/^[a-zA-Z0-9_]+$/.test(clean)) {
         this.errors.username = 'Можно использовать только буквы, цифры и подчеркивание';
         this.invalidFields.username = true;
       } else {
@@ -104,14 +98,12 @@ export default {
         this.invalidFields.username = false;
       }
     },
-
     validatePassword() {
-      const value = this.formData.password.trim();
-      
-      if (!value) {
+      const val = this.formData.password.trim();
+      if (!val) {
         this.errors.password = 'Пароль обязателен';
         this.invalidFields.password = true;
-      } else if (value.length < 6) {
+      } else if (val.length < 6) {
         this.errors.password = 'Пароль должен быть не менее 6 символов';
         this.invalidFields.password = true;
       } else {
@@ -119,48 +111,52 @@ export default {
         this.invalidFields.password = false;
       }
     },
-
     async submit() {
-  this.validateUsername();
-  this.validatePassword();
+      // 1. Валидация
+      this.validateUsername();
+      this.validatePassword();
+      if (!this.isFormValid) return;
 
-  if (this.isFormValid) {
-    const sanitizedData = {
-      username: this.formData.username,
-      password: this.formData.password
-    };
+      // 2. Подготовка данных
+      const payload = {
+        username: this.formData.username,
+        password: this.formData.password
+      };
 
-    try {
-      const response = await fetch('http://localhost:3000/api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(sanitizedData)
-      });
+      try {
+        // 3. Отправка на сервер
+        const res = await fetch('http://localhost:3000/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const result = await res.json();
 
-      const result = await response.json();
+        if (!res.ok) {
+          this.errorMessage = result.error || 'Ошибка авторизации';
+          return;
+        }
 
-      if (response.ok) {
-        // Успешная авторизация
-        console.log('Авторизация успешна', result);
-        // Можно сохранить токен или ID пользователя
-        // Например: localStorage.setItem('userId', result.userId);
+        // 4. Успешный вход:
+        // — сохраняем JWT и флаг
+        localStorage.setItem('token', result.token);
+        localStorage.setItem('isLoggedIn', 'true');
+
+        // — уведомляем Header.vue
         this.$emit('login-success', result);
-        this.formData = { username: '', password: '' };
-      } else {
-        // Ошибка от сервера
-        this.errorMessage = result.error || 'Ошибка авторизации';
-      }
 
-    } catch (error) {
-      console.error('Ошибка при отправке запроса:', error);
-      this.errorMessage = 'Ошибка сервера. Попробуйте позже.';
+        // — чистим форму и закрываем
+        this.formData.username = '';
+        this.formData.password = '';
+        this.errorMessage = '';
+        this.close();
+      } catch (err) {
+        console.error('Ошибка при запросе авторизации:', err);
+        this.errorMessage = 'Ошибка сервера. Попробуйте позже.';
+      }
     }
   }
-  }
-  }
-}
+};
 </script>
 
   

@@ -8,9 +8,7 @@
       "cover": "novost1.jpg",
       "description": "Описание книги...",
       "publishedYear": 2022,
-      "isbn": "978-5-389-08 247-9",
-      "createdAt": "2023-10-05T12:00:00Z",
-      "updatedAt": "2023-10-05T12:00:00Z"
+      "isbn": "978-5-389-08 247-9"
     },
     {
         "_id": "2",
@@ -20,9 +18,7 @@
         "cover": "novost2.jpeg",
         "description": "Описание книги...",
         "publishedYear": 2022,
-        "isbn": "978-5-389-08247-9",
-        "createdAt": "2023-10-05T12:00:00Z",
-        "updatedAt": "2023-10-05T12:00:00Z"
+        "isbn": "978-5-389-08247-9"
     },
     {
         "_id": "3",
@@ -32,9 +28,7 @@
         "cover": "novost3.jpg",
         "description": "Описание книги...",
         "publishedYear": 2022,
-        "isbn": "978-5-389-08247-9",
-        "createdAt": "2023-10-05T12:00:00Z",
-        "updatedAt": "2023-10-05T12:00:00Z"
+        "isbn": "978-5-389-08247-9"
     },
     {
         "_id": "4",
@@ -44,9 +38,7 @@
         "cover": "novost4.jpg",
         "description": "Описание книги...",
         "publishedYear": 2022,
-        "isbn": "978-5-389-08247-9",
-        "createdAt": "2023-10-05T12:00:00Z",
-        "updatedAt": "2023-10-05T12:00:00Z"
+        "isbn": "978-5-389-08247-9"
     },
     {
         "_id": "5",
@@ -56,8 +48,6 @@
         "cover": "novost5.jpg",
         "description": "Описание книги...",
         "publishedYear": 2022,
-        "isbn": "978-5-389-08247-9",
-        "createdAt": "2023-10-05T12:00:00Z",
-        "updatedAt": "2023-10-05T12:00:00Z"
+        "isbn": "978-5-389-08247-9"
     }
 ]

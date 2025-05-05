@@ -40,6 +40,7 @@
   .search-results {
     max-width: 800px;
     margin: 2rem auto;
+    padding: 0 15px;
   }
   
   .book-item {
@@ -47,6 +48,7 @@
     margin-bottom: 1rem;
     background: #f8f9fa;
     border-radius: 8px;
+    transition: transform 0.2s;
   }
   
   .author {
@@ -59,5 +61,46 @@
     text-align: center;
     padding: 2rem;
     color: #888;
+  }
+  
+  @media (max-width: 768px) {
+    .search-results {
+      margin: 1rem auto;
+    }
+  
+    .book-item {
+      padding: 0.8rem;
+      margin-bottom: 0.8rem;
+    }
+  
+    .book-item a {
+      font-size: 15px;
+      line-height: 1.4;
+    }
+  
+    .author {
+      font-size: 0.8em;
+    }
+  
+    .no-results {
+      padding: 1.5rem;
+      font-size: 0.9em;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .book-item {
+      padding: 0.6rem;
+      margin-bottom: 0.6rem;
+    }
+  
+    .book-item a {
+      font-size: 14px;
+    }
+  
+    .no-results {
+      padding: 1rem;
+      font-size: 0.85em;
+    }
   }
   </style>
