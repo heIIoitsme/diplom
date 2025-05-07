@@ -8,7 +8,7 @@
                   loading="lazy" 
                 />
                 <!-- Динамическое имя пользователя -->
-                <h1 class="nickname">{{ user }}</h1>
+                <h1 class="nickname">{{ user.username }}</h1>
             </div>
             <div class="profile_other">
                 <div class="profile_second">

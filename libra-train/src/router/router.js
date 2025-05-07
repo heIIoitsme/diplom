@@ -34,7 +34,7 @@ const routes = [
     meta: { title: 'Профиль', requiresAuth: true }
   },
   {
-    path: '/users/:username',
+    path: '/user/:username',
     name: 'UserProfile',
     component: UserProfile,
     props: true      // чтобы внутри пропсами пришёл username

@@ -146,6 +146,25 @@ app.get('/api/profile', authenticateToken, async (req, res) => {
   }
 });
 
+app.get('/api/users/:username', async (req, res) => {
+  try {
+    const col  = await dbService.getCollection('user');
+    // Ищем пользователя без passwordHash
+    const user = await col.findOne(
+      { username: req.params.username },
+      { projection: { passwordHash: 0 } }
+    );
+    if (!user) {
+      return res.status(404).json({ error: 'Пользователь не найден' });
+    }
+    // Возвращаем все поля кроме passwordHash
+    res.status(200).json(user);
+  } catch (err) {
+    console.error('Ошибка при получении пользователя:', err);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
+});
+
 // --- Запуск сервера
 app.listen(port, () => {
   console.log(`Сервер запущен на http://localhost:${port}`);
