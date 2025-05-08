@@ -6,6 +6,7 @@ import Registration from '@/pages/Registration.vue';
 import NewsSingle from '@/pages/NewsSingle.vue';
 import Profile from '@/components/Profile.vue';
 import UserProfile from '@/components/UserProfile.vue';
+import FullBook from '@/components/FullBook.vue';
 
 const routes = [
   {
@@ -38,6 +39,12 @@ const routes = [
     name: 'UserProfile',
     component: UserProfile,
     props: true      // чтобы внутри пропсами пришёл username
+  },
+  {
+    path: '/books/:slug',
+    name: 'FullBook',
+    component: FullBook,
+    meta: { title: 'Книга'}
   }
 ];
 
