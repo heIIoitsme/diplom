@@ -29,7 +29,7 @@ app.get('/', (req, res) => {
 });
 
 // --- Регистрация пользователя
-app.post('/api/register', async (req, res) => {
+app.post('/register', async (req, res) => {
   try {
     const { email, username, password } = req.body;
     if (!email || !username || !password) {
@@ -63,7 +63,7 @@ app.post('/api/register', async (req, res) => {
 });
 
 // --- Логин и выдача JWT
-app.post('/api/login', async (req, res) => {
+app.post('/login', async (req, res) => {
   try {
     const { username, password } = req.body;
     if (!username || !password) {
@@ -99,7 +99,7 @@ app.post('/api/login', async (req, res) => {
 });
 
 // --- Публичные маршруты
-app.get('/api/books', async (req, res) => {
+app.get('/books', async (req, res) => {
   const books = await dbService.find('book', {}, {
     sort: { createdAt: -1 },
     limit: 10,
@@ -108,7 +108,7 @@ app.get('/api/books', async (req, res) => {
   res.status(200).json(books);
 });
 
-app.get('/api/books/:id', async (req, res) => {
+app.get('/books/:id', async (req, res) => {
   try {
     const book = await dbService.findOne('book', req.params.id, {
       populate: [
@@ -127,7 +127,7 @@ app.get('/api/books/:id', async (req, res) => {
   }
 });
 
-app.get('/api/user-books/:userId', async (req, res) => {
+app.get('/user-books/:userId', async (req, res) => {
   try {
     const userIdStr = req.params.userId
     const userId = new ObjectId(userIdStr);
@@ -151,32 +151,32 @@ app.get('/api/user-books/:userId', async (req, res) => {
 })
 
 
-app.get('/api/authors', async (req, res) => {
+app.get('/authors', async (req, res) => {
   const authors = await dbService.find('author');
   res.status(200).json(authors);
 });
 
-app.get('/api/genres', async (req, res) => {
+app.get('/genres', async (req, res) => {
   const genres = await dbService.find('genres');
   res.status(200).json(genres);
 });
 
-app.get('/api/news', async (req, res) => {
+app.get('/news', async (req, res) => {
   const news = await dbService.find('news');
   res.status(200).json(news);
 });
 
-app.get('/api/users', async (req, res) => {
+app.get('/users', async (req, res) => {
   const users = await dbService.find({}, 'username'); // только логины
   res.status(200).json(users);
 });
 
 // --- Защищённые маршруты
-app.get('/api/secret', authenticateToken, (req, res) => {
+app.get('/secret', authenticateToken, (req, res) => {
   res.json({ message: `Привет, пользователь ${req.user.userId}` });
 });
 
-app.get('/api/profile', authenticateToken, async (req, res) => {
+app.get('/profile', authenticateToken, async (req, res) => {
   try {
     const col = await dbService.getCollection('user');
     const user = await col.findOne(
@@ -193,7 +193,7 @@ app.get('/api/profile', authenticateToken, async (req, res) => {
   }
 });
 
-app.get('/api/users/:username', async (req, res) => {
+app.get('/users/:username', async (req, res) => {
   try {
     const col  = await dbService.getCollection('user');
     // Ищем пользователя без passwordHash
