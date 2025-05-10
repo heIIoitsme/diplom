@@ -24,10 +24,6 @@ dbService.connect()
     process.exit(1);
   });
 
-app.get('/', (req, res) => {
-  res.send('Hello from Express!');
-});
-
 // --- Регистрация пользователя
 app.post('/api/register', async (req, res) => {
   try {
