@@ -212,3 +212,5 @@ app.get('/api/users/:username', async (req, res) => {
 app.listen(port, () => {
   console.log(`Сервер запущен на http://localhost:${port}`);
 });
+
+module.exports = app;
