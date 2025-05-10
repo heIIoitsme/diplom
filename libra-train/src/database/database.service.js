@@ -18,6 +18,11 @@ class DatabaseService {
         useUnifiedTopology: true,
         maxPoolSize: 10,
         serverSelectionTimeoutMS: 40000,
+        serverApi: {
+          version: ServerApiVersion.v1,
+          strict: true,
+          deprecationErrors: true,
+        }
       });
       clientPromise = client.connect();
     }
