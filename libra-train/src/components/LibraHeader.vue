@@ -91,7 +91,7 @@ import books from '@/database/books.json'
 import LoginModal from '@/components/LoginModal.vue'
 
 export default {
-  name: 'Header',
+  name: 'LibraHeader',
   components: {
     LoginModal
   },

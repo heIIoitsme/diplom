@@ -27,7 +27,7 @@
   
   <script setup>
   import { useProfile } from './useProfile.js';
-  const { user, error } = useProfile()
+  const { user } = useProfile()
   </script>
   
   <style scoped>
