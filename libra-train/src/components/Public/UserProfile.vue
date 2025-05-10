@@ -40,7 +40,7 @@ export default {
 
     onMounted(async () => {
       try {
-        const res = await fetch(`http://localhost:3000/api/users/${props.username}`);
+        const res = await fetch(`${process.env.VUE_APP_API_URL}/api/users/${props.username}`);
         if (res.status === 404) {
           error.value = 'Пользователь не найден';
           return;

@@ -21,8 +21,8 @@
   </template>
   
   <script>
-  import NewsBigCard from '@/components/News-card-big.vue'
-  import NewsSmallCard from '@/components/News-card-small.vue'
+  import NewsBigCard from '@/components/Modules/News-card-big.vue'
+  import NewsSmallCard from '@/components/Modules/News-card-small.vue'
   import axios from 'axios'
   
   export default {

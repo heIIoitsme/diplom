@@ -4,9 +4,10 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Home from '@/pages/Home.vue';
 import Registration from '@/pages/Registration.vue';
 import NewsSingle from '@/pages/NewsSingle.vue';
-import Profile from '@/components/Profile.vue';
-import UserProfile from '@/components/UserProfile.vue';
+import Profile from '@/components/Private/Profile.vue';
+import UserProfile from '@/components/Public/UserProfile.vue';
 import FullBook from '@/components/FullBook.vue';
+import Lists from '@/components/Private/Lists.vue';
 
 const routes = [
   {
@@ -30,9 +31,20 @@ const routes = [
   },
   {
     path: '/profile',
-    name: 'Profile',
-    component: Profile,              // ← тут теперь статически привязан
-    meta: { title: 'Профиль', requiresAuth: true }
+    meta: { title: 'Профиль', requiresAuth: true },
+    children: [
+      {
+        path:'',
+        name: 'Profile',
+        component: Profile,
+      },
+      {
+        path:'lists',
+        name: 'Lists',
+        component: Lists,
+        props: true
+      }
+    ]
   },
   {
     path: '/user/:username',
@@ -46,7 +58,7 @@ const routes = [
     component: FullBook,
     props: true,
     meta: { title: 'Книга'}
-  }
+  },
 ];
 
 const router = createRouter({

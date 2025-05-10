@@ -13,7 +13,7 @@
   
   <script>
 
-import CategoryCard from '@/components/Category-card.vue'
+import CategoryCard from '@/components/Modules/Category-card.vue'
 import axios from 'axios';
   
   export default {

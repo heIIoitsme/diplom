@@ -12,7 +12,7 @@
   </template>
   
   <script>
-  import BookCard from '@/components/Book-card.vue'
+  import BookCard from '@/components/Modules/Book-card.vue'
   import axios from 'axios'
   
   export default {

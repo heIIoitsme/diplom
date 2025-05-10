@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div v-if="user" class="container">
         <div class="profile_full">
             <div class="profile_main">
                 <img 
@@ -14,7 +14,7 @@
                 <div class="profile_second">
                     <div class="profile_last"></div>
                     <div class="profile_stata">
-                        <a> Список книг </a>
+                        <router-link :to="`/profile/lists`" class="router-link-custom"><span>Список книг</span></router-link>
                     </div>
                 </div>
                 <div class="profile_time"></div>
@@ -22,41 +22,12 @@
             </div>
         </div>
     </div>
+    <p v-else>Загрузка...</p>
   </template>
   
-  <script>
-  import { ref, onMounted } from 'vue';
-  import { useRouter } from 'vue-router';
-  
-  export default {
-    name: 'Profile',
-    setup() {
-      const user = ref(null);
-      const error = ref('');
-      const router = useRouter();
-  
-      onMounted(async () => {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          return router.replace('/register');
-        }
-  
-        try {
-          const res = await fetch('http://localhost:3000/api/profile', {
-            headers: { 'Authorization': `Bearer ${token}` }
-          });
-          if (!res.ok) {
-            return router.replace('/register');
-          }
-          user.value = await res.json();
-        } catch (e) {
-          error.value = 'Не удалось загрузить профиль';
-        }
-      });
-  
-      return { user, error };
-    }
-  };
+  <script setup>
+  import { useProfile } from './useProfile.js';
+  const { user, error } = useProfile()
   </script>
   
   <style scoped>
@@ -138,6 +109,12 @@
   .nickname {
       text-align: center;
       margin: 0px
+  }
+
+  .router-link-custom{
+    text-decoration: none;
+    display: inline-block;
+    color: inherit;
   }
   
   @media (max-width: 1500px) {

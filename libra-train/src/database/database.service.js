@@ -52,15 +52,15 @@ class DatabaseService {
           { $match: query },
           ...populate.map(field => ({
             $lookup: {
-              from: field.from,            // Название коллекции
-              localField: field.localField, // Поле в основной коллекции
-              foreignField: field.foreignField, // Поле в связанной коллекции
-              as: field.as                  // Куда положить результат
+              from: field.from,
+              localField: field.localField,
+              foreignField: field.foreignField,
+              as: field.as
             }
           })),
-          { $sort: sort },
+          ...(Object.keys(sort).length > 0 ? [{ $sort: sort }] : []), // ← исправление
           ...(limit > 0 ? [{ $limit: limit }] : []),
-          ...(Object.keys(projection).length ? [{ $project: projection }] : [])
+          ...(Object.keys(projection).length > 0 ? [{ $project: projection }] : [])
         ];
   
         const result = await collection.aggregate(pipeline).toArray();

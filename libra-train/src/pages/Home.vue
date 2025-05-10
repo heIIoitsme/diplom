@@ -8,10 +8,10 @@
 </template>
 
 <script>
-import Announcer from '@/components/Announcer.vue';
-import Recomendations from '@/components/Recomendations.vue';
-import Categories from '@/components/Categories.vue';
-import NewsBanner from '@/components/NewsBanner.vue'
+import Announcer from '@/components/MainPage/Announcer.vue';
+import Recomendations from '@/components/MainPage/Recomendations.vue';
+import Categories from '@/components/MainPage/Categories.vue';
+import NewsBanner from '@/components/MainPage/NewsBanner.vue'
 
 export default {
   name: 'Home',
