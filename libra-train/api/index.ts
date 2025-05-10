@@ -173,14 +173,16 @@ app.get('/users', async (req, res) => {
 
 // --- Защищённые маршруты
 app.get('/secret', authenticateToken, (req, res) => {
-  res.json({ message: `Привет, пользователь ${req.user.userId}` });
+  const userId = (req as any).user.userId;
+  res.json({ message: `Привет, пользователь ${userId}` });
 });
 
 app.get('/profile', authenticateToken, async (req, res) => {
   try {
     const col = await dbService.getCollection('user');
+    const userId = (req as any).user.userId;
     const user = await col.findOne(
-      { _id: new ObjectId(req.user.userId) },
+      { _id: new ObjectId(userId) },
       { projection: { passwordHash: 0 } }
     );
     if (!user) {
