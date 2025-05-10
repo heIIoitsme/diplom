@@ -1,5 +1,5 @@
 <template>
-  <div class="card_container">
+  <router-link :to="`/book/${book._id}`" class="router-link-custom"><div class="card_container">
     <img 
       class="image" 
       :src="require(`@/assets/covers/${book.cover}`)"
@@ -16,7 +16,7 @@
         <ratingText class="ratingname">{{ formattedRating }}</ratingText>
       </div>
     </div>
-  </div>
+  </div></router-link>
 </template>
 
 <script>
@@ -113,4 +113,9 @@ export default {
   margin: 0px 8px;
   justify-content: space-between;
 }
+.router-link-custom{
+    text-decoration: none;
+    display: inline-block;
+    color: inherit;
+  }
 </style>

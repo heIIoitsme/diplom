@@ -29,7 +29,7 @@ import axios from 'axios';
         const response = await axios.get(`${process.env.VUE_APP_API_URL}/api/genres`); 
         this.categories = response.data
       } catch (error) {
-        console.error('Ошибка загрузки книг:', error)
+        console.error('Ошибка загрузки жанров:', error)
       }
     },
   }

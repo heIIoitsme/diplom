@@ -1,4 +1,5 @@
 import { MongoClient } from 'mongodb';
+import { ObjectId } from 'mongodb';
 
 class DatabaseService {
   constructor() {
@@ -120,9 +121,40 @@ class DatabaseService {
     }
   }
 
-  async findOne(collectionName, query) {
+  async findOne(collectionName, query={}, options = {}) {
+    const {
+      projection = {},
+      sort = {},
+      limit = 0,
+      populate = []
+    } = options;
     try {
       const collection = await this.getCollection(collectionName);
+
+      if (typeof query === 'string') {
+        query = { _id: new ObjectId(query) };
+      }
+
+      if (populate.length > 0) {
+        const pipeline = [
+          { $match: query },
+          ...populate.map(field => ({
+            $lookup: {
+              from: field.from,
+              localField: field.localField,
+              foreignField: field.foreignField,
+              as: field.as
+            }
+          })),
+          ...(Object.keys(sort).length ? [{ $sort: sort }] : []),        // ✅ добавлять $sort только если есть ключи
+          ...(limit > 0 ? [{ $limit: limit }] : []),
+          ...(Object.keys(projection).length ? [{ $project: projection }] : [])
+        ];
+  
+        const result = await collection.aggregate(pipeline).toArray();
+        return result[0] || null;
+      }
+      
       return await collection.findOne(query);
     } catch (error) {
       console.error('FindOne error:', error);

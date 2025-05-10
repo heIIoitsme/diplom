@@ -8,12 +8,14 @@
                   loading="lazy" 
                 />
                 <!-- Динамическое имя пользователя -->
-                <h1 class="nickname">{{ user?.username || 'Мое имя' }}</h1>
+                <h1 class="nickname">{{ user.username }}</h1>
             </div>
             <div class="profile_other">
                 <div class="profile_second">
                     <div class="profile_last"></div>
-                    <div class="profile_stata"></div>
+                    <div class="profile_stata">
+                        <a> Список книг </a>
+                    </div>
                 </div>
                 <div class="profile_time"></div>
                 <div class="profile_end"></div>
@@ -107,6 +109,11 @@
       width: 480px;
       background-color: #ffffff;
       border-radius: 20px;
+  }
+  .profile_stata a {
+    display: block;
+    font-size: 32px;
+    margin: 20px;
   }
   
   .profile_time {

@@ -41,9 +41,10 @@ const routes = [
     props: true      // чтобы внутри пропсами пришёл username
   },
   {
-    path: '/books/:slug',
+    path: '/book/:id',
     name: 'FullBook',
     component: FullBook,
+    props: true,
     meta: { title: 'Книга'}
   }
 ];

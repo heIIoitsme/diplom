@@ -104,6 +104,19 @@ app.get('/api/books', async (req, res) => {
   res.status(200).json(books);
 });
 
+app.get('/api/books/:id', async (req, res) => {
+  try {
+    const book = await dbService.findOne('book', req.params.id, {
+      populate: [{ from: 'author', localField: 'author', foreignField: '_id', as: 'author' }]
+    }) // id как строка — всё работает
+    if (!book) return res.status(404).json({ error: 'Книга не найдена' })
+    res.json(book)
+  } catch (err) {
+    res.status(500).json({ error: 'Ошибка сервера' })
+  }
+});
+
+
 app.get('/api/authors', async (req, res) => {
   const authors = await dbService.find('author');
   res.status(200).json(authors);
