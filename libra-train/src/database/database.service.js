@@ -16,7 +16,7 @@ class DatabaseService {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         maxPoolSize: 10,
-        serverSelectionTimeoutMS: 5000
+        serverSelectionTimeoutMS: 40000
       });
 
       await this.client.connect();
