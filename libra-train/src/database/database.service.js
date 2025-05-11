@@ -12,7 +12,7 @@ class DatabaseService {
     if (this.isConnected) return this.db;
     
     try {
-      this.client = new MongoClient(process.env.VUE_APP_MONGODB_URI, {
+      this.client = new MongoClient(process.env.MONGODB_URI, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         maxPoolSize: 10,
