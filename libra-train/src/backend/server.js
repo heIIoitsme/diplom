@@ -5,7 +5,7 @@ dotenv.config();
 import jwt from 'jsonwebtoken';
 import { ObjectId } from 'mongodb';
 import { dbService } from '../database/database.service.js';
-import { authenticateToken } from '../backend/middleware/authMiddleware.js';
+import { authenticateToken } from './middleware/authMiddleware.js';
 
 dotenv.config();
 
@@ -212,5 +212,3 @@ app.get('/api/users/:username', async (req, res) => {
 app.listen(port, () => {
   console.log(`Сервер запущен на http://localhost:${port}`);
 });
-
-module.exports = app;
