@@ -1,5 +1,5 @@
 { "version": 2, "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" },
+    { "source": "/(.*)", "destination": "/" },
     {"source": "/api/:path*", "destination": "/api/:path*"}
     ] 
 }
