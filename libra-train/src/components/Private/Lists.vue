@@ -9,14 +9,17 @@
       <h1 class="nickname">{{ user.username }}</h1>
     </div>
 
-    <div class="lists">
-      <p v-if="userBooks.length === 0">У вас пока нет книг в списках.</p>
-      <ListCard
-        v-for="(entries, status) in groupedByStatus"
-        :key="status"
-        :title="capitalize(status)"
-        :entries="entries"
-      />
+    <div class="stata_main">
+      <div class="stata"></div>
+      <div class="lists">
+        <p v-if="userBooks.length === 0">У вас пока нет книг в списках.</p>
+        <ListCard
+          v-for="(entries, status) in groupedByStatus"
+          :key="status"
+          :title="capitalize(status)"
+          :entries="entries"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -64,9 +67,9 @@ function capitalize(str) {
   <style scoped>
   .container {
     display: flex;
-    justify-content: center;
-    align-items: flex-start;
+    justify-content: center;  
     padding: 40px;
+    gap: 30px;
   }
   
   .profile_full {
@@ -99,13 +102,22 @@ function capitalize(str) {
   }
   
   .stata_main {
-    flex: 1;
+    max-width: 1010px;
+    width: 100%;
     display: flex;
     flex-direction: column;
     gap: 30px;
   }
   
+  .stata {
+    width: 100%;
+    height: 200px;
+    background-color: #ffffff;
+    border-radius: 20px;
+  }
+  
   .lists {
+    width: 100%;
     display: flex;
     flex-direction: column;
     gap: 30px;

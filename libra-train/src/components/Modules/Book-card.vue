@@ -114,8 +114,8 @@ export default {
   justify-content: space-between;
 }
 .router-link-custom{
-    text-decoration: none;
-    display: inline-block;
-    color: inherit;
-  }
+  text-decoration: none;
+  display: inline-block;
+  color: inherit;
+}
 </style>

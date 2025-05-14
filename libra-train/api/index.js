@@ -4,13 +4,15 @@ import dotenv from 'dotenv';
 dotenv.config();
 import jwt from 'jsonwebtoken';
 import { ObjectId } from 'mongodb';
-import { dbService } from '../database/database.service.js';
-import { authenticateToken } from './middleware/authMiddleware.js';
+import { dbService } from '../src/database/database.service.js';
+import { authenticateToken } from '../src/backend/middleware/authMiddleware.js';
 
 dotenv.config();
 
 const app = express();
 const port = 3000;
+
+app.use('/', express.static('public'))
 
 // --- Middleware
 app.use(cors());
@@ -23,6 +25,10 @@ dbService.connect()
     console.error('❌ Не удалось подключиться к MongoDB:', err);
     process.exit(1);
   });
+
+app.get('/api/', (req, res) => {
+  res.send('Hello from Express!');
+});
 
 // --- Регистрация пользователя
 app.post('/api/register', async (req, res) => {
