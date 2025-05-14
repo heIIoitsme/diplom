@@ -4,15 +4,13 @@ import dotenv from 'dotenv';
 dotenv.config();
 import jwt from 'jsonwebtoken';
 import { ObjectId } from 'mongodb';
-import { dbService } from '../src/database/database.service.js';
-import { authenticateToken } from '../src/backend/middleware/authMiddleware.js';
+import { dbService } from '../database/database.service.js';
+import { authenticateToken } from './middleware/authMiddleware.js';
 
 dotenv.config();
 
 const app = express();
 const port = 3000;
-
-app.use('/', express.static('public'))
 
 // --- Middleware
 app.use(cors());
@@ -25,10 +23,6 @@ dbService.connect()
     console.error('❌ Не удалось подключиться к MongoDB:', err);
     process.exit(1);
   });
-
-app.get('/api/', (req, res) => {
-  res.send('Hello from Express!');
-});
 
 // --- Регистрация пользователя
 app.post('/api/register', async (req, res) => {
@@ -131,26 +125,28 @@ app.get('/api/books/:id', async (req, res) => {
 
 app.get('/api/user-books/:userId', async (req, res) => {
   try {
-    const userIdStr = req.params.userId
-    const userId = new ObjectId(userIdStr);
+    const userId = new ObjectId(req.params.userId);
+    const collection = await dbService.getCollection('user-books');
+    console.log('userId:', userId);
 
-    const entries = await dbService.find('user_books', { userId }, {
-      populate: [
-        {
+    const entries = await collection.aggregate([
+      { $match: { userId } },
+      {
+        $lookup: {
           from: 'book',
           localField: 'bookId',
           foreignField: '_id',
           as: 'book'
         }
-      ]
-    })
+      }
+    ]).toArray();
 
-    res.status(200).json(entries)
+    res.status(200).json(entries);
   } catch (err) {
-    console.error(err)
-    res.status(500).json({ error: 'Не удалось получить списки пользователя' })
+    console.error(err);
+    res.status(500).json({ error: 'Не удалось получить списки пользователя' });
   }
-})
+});
 
 
 app.get('/api/authors', async (req, res) => {
