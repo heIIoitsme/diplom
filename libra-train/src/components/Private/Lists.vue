@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div v-if="user" class="container">
       <div class="profile_full">
         <div class="profile_main">
           <img 
@@ -27,49 +27,13 @@
         </div>
       </div>
     </div>
+    <p v-else>Загрузка...</p>
   </template>
   
-  <script setup>
-  import { ref, onMounted } from 'vue'
-  import axios from 'axios'
-  import ListCard from '@/components/Modules/List-card.vue'
-  
-  // Состояние
-  const user = ref({ username: 'Загрузка...' })
-  const userBooks = ref([])
-  const groupedByStatus = ref({})
-  
-  // Получаем ID пользователя (из localStorage или props)
-  const userId = localStorage.getItem('userId')
-  
-  // Загрузка данных при монтировании
-  onMounted(async () => {
-    try {
-      // Загружаем имя пользователя
-      const userRes = await axios.get(`${process.env.VUE_APP_API_URL}/api/users/${userId}`)
-      user.value = userRes.data
-  
-      // Загружаем книги пользователя
-      const listRes = await axios.get(`${process.env.VUE_APP_API_URL}/api/user-books/${userId}`)
-      userBooks.value = listRes.data
-  
-      // Группируем по статусу
-      groupedByStatus.value = userBooks.value.reduce((acc, item) => {
-        const status = item.status || 'Без категории'
-        if (!acc[status]) acc[status] = []
-        acc[status].push(item)
-        return acc
-      }, {})
-    } catch (err) {
-      console.error('Ошибка загрузки данных:', err)
-    }
-  })
-  
-  // Функция: красиво отобразить статус
-  function capitalize(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1)
-  }
-  </script>
+<script setup>
+  import { useProfile } from './useProfile.js';
+  const { user } = useProfile()
+</script>
   
   <style scoped>
   .container {
