@@ -125,26 +125,28 @@ app.get('/api/books/:id', async (req, res) => {
 
 app.get('/api/user-books/:userId', async (req, res) => {
   try {
-    const userIdStr = req.params.userId
-    const userId = new ObjectId(userIdStr);
+    const userId = new ObjectId(req.params.userId);
+    const collection = await dbService.getCollection('user-books');
+    console.log('userId:', userId);
 
-    const entries = await dbService.find('user_books', { userId }, {
-      populate: [
-        {
+    const entries = await collection.aggregate([
+      { $match: { userId } },
+      {
+        $lookup: {
           from: 'book',
           localField: 'bookId',
           foreignField: '_id',
           as: 'book'
         }
-      ]
-    })
+      }
+    ]).toArray();
 
-    res.status(200).json(entries)
+    res.status(200).json(entries);
   } catch (err) {
-    console.error(err)
-    res.status(500).json({ error: 'Не удалось получить списки пользователя' })
+    console.error(err);
+    res.status(500).json({ error: 'Не удалось получить списки пользователя' });
   }
-})
+});
 
 
 app.get('/api/authors', async (req, res) => {

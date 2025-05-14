@@ -2,15 +2,17 @@
     <div class="list-block">
       <h2 class="list-title">{{ title }}</h2>
       <table class="list-table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Название</th>
-            <th>Оценка</th>
-            <th>Жанр</th>
-            <th>Дата публикации</th>
-          </tr>
-        </thead>
+        <div class="bg-head">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Название</th>
+              <th>Оценка</th>
+              <th>Жанр</th>
+              <th>Дата публикации</th>
+            </tr>
+          </thead>
+        </div>
         <tbody>
           <tr v-for="(entry, index) in entries" :key="entry._id">
             <td>{{ index + 1 }}</td>
@@ -42,29 +44,44 @@
   }
   
   .list-title {
+    max-width: 1010px;
+    height: 40px;
     font-size: 22px;
-    margin-bottom: 10px;
+    margin: unset;
+    background: #fff;
+    border-radius: 10px;
   }
   
   .list-table {
     width: 100%;
     border-collapse: collapse;
-    background: #f9f9f9;
+    background: #fff;
   }
   
   .list-table thead {
+    width: 100%;
     background-color: #000;
     color: #fff;
+  }
+  .bg-head {
+    background-color: #000;
+    border-radius: 0 0 10px 10px ;
+  }
+
+  .list-table th:first-child {
+    border-bottom-left-radius: 10px;
+  }
+  .list-table th:last-child {
+    border-bottom-right-radius: 10px;
   }
   
   .list-table th,
   .list-table td {
     padding: 10px 16px;
     text-align: left;
-    border: 1px solid #ddd;
   }
   
   .list-table tbody tr:hover {
-    background-color: #f0f0f0;
+    background-color: #fff;
   }
 </style>
