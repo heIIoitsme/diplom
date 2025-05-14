@@ -46,11 +46,11 @@
   onMounted(async () => {
     try {
       // Загружаем имя пользователя
-      const userRes = await axios.get(`${import.meta.env.VUE_APP_API_URL}/api/users/${userId}`)
+      const userRes = await axios.get(`${process.env.VUE_APP_API_URL}/api/users/${userId}`)
       user.value = userRes.data
   
       // Загружаем книги пользователя
-      const listRes = await axios.get(`${import.meta.env.VUE_APP_API_URL}/api/user-books/${userId}`)
+      const listRes = await axios.get(`${process.env.VUE_APP_API_URL}/api/user-books/${userId}`)
       userBooks.value = listRes.data
   
       // Группируем по статусу
