@@ -8,6 +8,7 @@ import Profile from '@/components/Private/Profile.vue';
 import UserProfile from '@/components/Public/UserProfile.vue';
 import FullBook from '@/components/FullBook.vue';
 import Lists from '@/components/Private/Lists.vue';
+import UserLists from '@/components/Public/UserLists.vue';
 
 const routes = [
   {
@@ -50,7 +51,13 @@ const routes = [
     path: '/user/:username',
     name: 'UserProfile',
     component: UserProfile,
-    props: true      // чтобы внутри пропсами пришёл username
+    props: true
+  },
+    {
+    path: '/user/:username/lists',
+    name: 'UserLists',
+    component: UserLists,
+    props: true
   },
   {
     path: '/book/:id',

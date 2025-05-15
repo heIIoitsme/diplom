@@ -7,13 +7,16 @@
                   :src="require(`@/assets/covers/anna-karenina.jpeg`)"
                   loading="lazy" 
                 />
-                <!-- Динамическое имя пользователя -->
                 <h1 class="nickname">{{ user.username }}</h1>
             </div>
             <div class="profile_other">
                 <div class="profile_second">
                     <div class="profile_last"></div>
-                    <div class="profile_stata"></div>
+                    <div class="profile_stata">
+                        <router-link :to="{ name: 'UserLists', params: { username: user.username } }" class="router-link-custom">
+                            <span>Список книг</span>
+                        </router-link>
+                    </div>
                 </div>
                 <div class="profile_time"></div>
                 <div class="profile_end"></div>
@@ -28,7 +31,6 @@ import { ref, onMounted } from 'vue';
 export default {
   name: 'UserProfile',
   props: {
-    // Получаем username из URL благодаря props: true в router.js
     username: {
       type: String,
       required: true

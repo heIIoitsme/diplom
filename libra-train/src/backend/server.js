@@ -210,6 +210,60 @@ app.get('/api/users/:username', async (req, res) => {
   }
 });
 
+app.post('/api/user/books', authenticateToken, async (req, res) => {
+  try {
+    const { bookId, status } = req.body;
+    const userId = req.user.userId;
+
+    const collection = await dbService.getCollection('user-books');
+    
+    // Обновляем или создаем запись
+    const result = await collection.updateOne(
+      { userId: new ObjectId(userId), bookId: new ObjectId(bookId) },
+      { $set: { 
+        status,
+        addedAt: new Date()
+      }},
+      { upsert: true }
+    );
+
+    res.status(200).json({ success: true, status });
+  } catch (error) {
+    console.error('Ошибка обновления статуса:', error);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
+});
+
+app.get('/api/user/books/:bookId', authenticateToken, async (req, res) => {
+  try {
+    const bookId = new ObjectId(req.params.bookId);
+    const userId = new ObjectId(req.user.userId);
+
+    const collection = await dbService.getCollection('user-books');
+    const entry = await collection.findOne({ userId, bookId });
+
+    res.status(200).json(entry || null);
+  } catch (error) {
+    console.error('Ошибка получения статуса:', error);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
+});
+
+app.delete('/api/user/books/:bookId', authenticateToken, async (req, res) => {
+  try {
+    const bookId = new ObjectId(req.params.bookId);
+    const userId = new ObjectId(req.user.userId);
+
+    const collection = await dbService.getCollection('user-books');
+    await collection.deleteOne({ userId, bookId });
+
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.error('Ошибка удаления:', error);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
+});
+
 // --- Запуск сервера
 app.listen(port, () => {
   console.log(`Сервер запущен на http://localhost:${port}`);
