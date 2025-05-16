@@ -131,6 +131,12 @@ function capitalize(str) {
     flex-direction: column;
     gap: 30px;
   }
+
+  .profile_stata a {
+    display: block;
+    font-size: 32px;
+    margin: 20px;
+  }
   
   .stata {
     width: 100%;

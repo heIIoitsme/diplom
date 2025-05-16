@@ -116,6 +116,12 @@ export default {
     border-radius: 20px;
 }
 
+.profile_stata a {
+    display: block;
+    font-size: 32px;
+    margin: 20px;
+}
+
 .profile_time {
     height: 140px;
     background-color: #ffffff;
