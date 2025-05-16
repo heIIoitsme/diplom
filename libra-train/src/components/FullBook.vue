@@ -15,12 +15,13 @@
                     </div>
                     <div class="dropdown-wrapper">
                       <button @click="toggleDropdown" class="list_button">
-                        <span>
-                          {{ currentStatus ? capitalize(currentStatus) : '+ Добавить в список' }}
+                        <span class="add-list">
+                          {{ currentStatus ? capitalize(currentStatus) : '+  Добавить в список' }}
                         </span>
+                        <span class="arrow">{{ showDropdown ? '▼' : '▶' }}</span>
                       </button>
                       <ul v-if="showDropdown" class="dropdown-menu">
-                        <li v-for="s in statuses" :key="s"
+                        <li v-for="s in availableStatuses" :key="s"
                             class="dropdown-item" @click="selectStatus(s)">
                           {{ capitalize(s) }}
                         </li>
@@ -42,7 +43,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import axios from 'axios'
 
@@ -58,6 +59,8 @@ const statuses      = [
   'читаю',
   'отложено'
 ]
+  const availableStatuses = computed(() => 
+  statuses.filter(s => s !== currentStatus.value))
 
 // Получаем id из маршрута и загружаем одну книгу
 onMounted(async () => {
@@ -69,6 +72,21 @@ onMounted(async () => {
   } catch (err) {
     console.error('Ошибка загрузки книги:', err)
     error.value = 'Ошибка при загрузке книги'
+  }
+
+
+  const token = localStorage.getItem('token')
+  if (!token) return
+
+  try {
+    const resStatus = await axios.get(
+      `${process.env.VUE_APP_API_URL}/api/user-books/book/${id}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    )
+    console.log('>>> GET /api/user-books response.data:', resStatus.data)
+    currentStatus.value = resStatus.data?.status || null
+  } catch (e) {
+    console.error('Ошибка получения статуса книги:', e)
   }
 })
 
@@ -115,24 +133,6 @@ async function deleteEntry() {
   }
 }
 
-onMounted(async () => {
-  const token = localStorage.getItem('token')
-  if (!token) return
-
-  try {
-    const bookId = route.params.id
-    const res = await axios.get(
-      `${process.env.VUE_APP_API_URL}/api/user-books/${bookId}`,
-      { headers: { Authorization: `Bearer ${token}` } }
-    )
-    // Если запись есть, выставляем статус, иначе оставляем null
-    if (res.data && res.data.status) {
-      currentStatus.value = res.data.status
-    }
-  } catch (e) {
-    console.error('Ошибка получения статуса книги:', e)
-  }
-})
 
 </script>
 
@@ -173,13 +173,12 @@ onMounted(async () => {
   }
   .list_button {
     height: 25px;
-    width: 150px;
+    width: 170px;
     border-radius: 25px;
     background-color: black;
   }
   .list_button span {
     font-family: Kreadon;
-    font-size: 14px;
     color: #fff;
   }
   .book_img {
@@ -195,26 +194,40 @@ onMounted(async () => {
 }
 .dropdown-menu {
   position: absolute;
-  top: 100%;
   left: 0;
-  margin-top: 4px;
-  background: #fff;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  min-width: 150px;
+  margin-top: 2px;
+  min-width: 170px;
   z-index: 100;
   list-style: none;
   padding: 0;
 }
 .dropdown-item {
-  padding: 10px;
+  padding: 2px;
   cursor: pointer;
+  font-size: 14px;
+  text-align: center;
+  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border-right: 1px solid #C8C8C8;
+  border-bottom: 1px solid #C8C8C8;
+  border-left: 1px solid #C8C8C8;
 }
 .dropdown-item:hover {
   background: #f0f0f0;
 }
 .dropdown-item.delete {
   color: red;
+}
+
+.arrow {
+  display: inline-block;
+  margin-left: 8px;
+  font-size: 10px;
+  color: #fff;
+}
+
+.add-list {
+  font-size: 14px;
 }
 
 </style>

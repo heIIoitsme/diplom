@@ -38,7 +38,7 @@ watch(
   async (u) => {
     if (!u) return
     const token = localStorage.getItem('token')
-    const res = await fetch(`${process.env.VUE_APP_API_URL}/api/user-books/${u._id}`, {
+    const res = await fetch(`${process.env.VUE_APP_API_URL}/api/user-books/user/${u._id}`, {
       headers: { Authorization: `Bearer ${token}` }
     })
     if (res.ok) {

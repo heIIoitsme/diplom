@@ -123,7 +123,7 @@ app.get('/api/books/:id', async (req, res) => {
   }
 });
 
-app.get('/api/user-books/:userId', async (req, res) => {
+app.get('/api/user-books/user/:userId', async (req, res) => {
   try {
     const userId = new ObjectId(req.params.userId);
     const collection = await dbService.getCollection('user-books');
@@ -220,7 +220,7 @@ app.post('/api/user-books', authenticateToken, async (req, res) => {
   res.json({ success:true })
 })
 
-app.get('/api/user-books/:bookId', authenticateToken, async (req, res) => {
+app.get('/api/user-books/book/:bookId', authenticateToken, async (req, res) => {
   const col = await dbService.getCollection('user-books')
   const entry = await col.findOne({
     userId: new ObjectId(req.user.userId),

@@ -63,7 +63,7 @@ watch(
   () => user.value,
   async (u) => {
     if (!u) return
-    const res = await fetch(`${process.env.VUE_APP_API_URL}/api/user-books/${u._id}`)
+    const res = await fetch(`${process.env.VUE_APP_API_URL}/api/user-books/user/${u._id}`)
     if (res.ok) {
       userBooks.value = await res.json()
     } else {
