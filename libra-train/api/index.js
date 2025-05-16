@@ -129,7 +129,7 @@ app.get('/api/books/:id', async (req, res) => {
   }
 });
 
-app.get('/api/user-books/:userId', async (req, res) => {
+app.get('/api/user-books/user/:userId', async (req, res) => {
   try {
     const userId = new ObjectId(req.params.userId);
     const collection = await dbService.getCollection('user-books');
@@ -215,6 +215,35 @@ app.get('/api/users/:username', async (req, res) => {
     res.status(500).json({ error: 'Ошибка сервера' });
   }
 });
+
+app.post('/api/user-books', authenticateToken, async (req, res) => {
+  const col = await dbService.getCollection('user-books')
+  await col.updateOne(
+    { userId: new ObjectId(req.user.userId), bookId: new ObjectId(req.body.bookId) },
+    { $set:{ status:req.body.status, addedAt:new Date(req.body.addedAt) } },
+    { upsert:true }
+  )
+  res.json({ success:true })
+})
+
+app.get('/api/user-books/book/:bookId', authenticateToken, async (req, res) => {
+  const col = await dbService.getCollection('user-books')
+  const entry = await col.findOne({
+    userId: new ObjectId(req.user.userId),
+    bookId: new ObjectId(req.params.bookId)
+  })
+  console.log('GET /api/user-books entry:', entry)
+  res.json(entry)
+})
+
+app.delete('/api/user-books/:bookId', authenticateToken, async (req, res) => {
+  const col = await dbService.getCollection('user-books')
+  await col.deleteOne({
+    userId: new ObjectId(req.user.userId),
+    bookId: new ObjectId(req.params.bookId)
+  })
+  res.json({ success:true })
+})
 
 // --- Запуск сервера
 app.listen(port, () => {
