@@ -13,9 +13,23 @@
                         <a3>Рейтинг {{ book.rating }}</a3>
                         <div>Звездочки</div>
                     </div>
-                    <button class='list_button'>
-                        <a>+ Добавить в список</a>
-                    </button>
+                    <div class="dropdown-wrapper">
+                      <button @click="toggleDropdown" class="list_button">
+                        <span>
+                          {{ currentStatus ? capitalize(currentStatus) : '+ Добавить в список' }}
+                        </span>
+                      </button>
+                      <ul v-if="showDropdown" class="dropdown-menu">
+                        <li v-for="s in statuses" :key="s"
+                            class="dropdown-item" @click="selectStatus(s)">
+                          {{ capitalize(s) }}
+                        </li>
+                        <li v-if="currentStatus" class="dropdown-item delete"
+                            @click="deleteEntry">
+                          Удалить из списка
+                        </li>
+                      </ul>
+                    </div>
                 </div>
             </div>
             <div class='second_container'>
@@ -35,6 +49,15 @@ import axios from 'axios'
 const route = useRoute()
 const book = ref(null)
 const error = ref('')
+const showDropdown  = ref(false)
+const currentStatus = ref(null)
+const statuses      = [
+  'прочитано',
+  'запланировано',
+  'брошено',
+  'читаю',
+  'отложено'
+]
 
 // Получаем id из маршрута и загружаем одну книгу
 onMounted(async () => {
@@ -48,6 +71,69 @@ onMounted(async () => {
     error.value = 'Ошибка при загрузке книги'
   }
 })
+
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1)
+}
+
+function toggleDropdown() {
+  showDropdown.value = !showDropdown.value
+}
+
+async function selectStatus(status) {
+  try {
+    const token = localStorage.getItem('token')
+    if (!token) {
+      alert('Пожалуйста, войдите в систему')
+      return
+    }
+    const bookId = route.params.id
+    await axios.post(
+      `${process.env.VUE_APP_API_URL}/api/user-books`,
+      { bookId, status, addedAt: new Date() },
+      { headers: { Authorization: `Bearer ${token}` } }
+    )
+    currentStatus.value = status
+    showDropdown.value = false
+  } catch (e) {
+    console.error('Ошибка добавления в список:', e)
+  }
+}
+async function deleteEntry() {
+  try {
+    const token = localStorage.getItem('token')
+    if (!token) return
+    const bookId = route.params.id
+    await axios.delete(
+      `${process.env.VUE_APP_API_URL}/api/user-books/${bookId}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    )
+    currentStatus.value = null
+    showDropdown.value = false
+  } catch (e) {
+    console.error('Ошибка удаления из списка:', e)
+  }
+}
+
+onMounted(async () => {
+  const token = localStorage.getItem('token')
+  if (!token) return
+
+  try {
+    const bookId = route.params.id
+    const res = await axios.get(
+      `${process.env.VUE_APP_API_URL}/api/user-books/${bookId}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    )
+    // Если запись есть, выставляем статус, иначе оставляем null
+    if (res.data && res.data.status) {
+      currentStatus.value = res.data.status
+    }
+  } catch (e) {
+    console.error('Ошибка получения статуса книги:', e)
+  }
+})
+
 </script>
 
 <style scoped>
@@ -91,7 +177,7 @@ onMounted(async () => {
     border-radius: 25px;
     background-color: black;
   }
-  .list_button a {
+  .list_button span {
     font-family: Kreadon;
     font-size: 14px;
     color: #fff;
@@ -102,5 +188,33 @@ onMounted(async () => {
     padding: 20px;
     border-radius: 30px;
   }
+
+  .dropdown-wrapper {
+  position: relative;
+  display: inline-block;
+}
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 4px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  min-width: 150px;
+  z-index: 100;
+  list-style: none;
+  padding: 0;
+}
+.dropdown-item {
+  padding: 10px;
+  cursor: pointer;
+}
+.dropdown-item:hover {
+  background: #f0f0f0;
+}
+.dropdown-item.delete {
+  color: red;
+}
 
 </style>
