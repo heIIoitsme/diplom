@@ -143,7 +143,7 @@ app.get('/api/user-books/user/:userId', async (req, res) => {
           localField: 'bookId',
           foreignField: '_id',
           as: 'book'
-        }
+        },
       }
     ]).toArray();
 
@@ -217,14 +217,20 @@ app.get('/api/users/:username', async (req, res) => {
 });
 
 app.post('/api/user-books', authenticateToken, async (req, res) => {
-  const col = await dbService.getCollection('user-books')
-  await col.updateOne(
-    { userId: new ObjectId(req.user.userId), bookId: new ObjectId(req.body.bookId) },
-    { $set:{ status:req.body.status, addedAt:new Date(req.body.addedAt) } },
-    { upsert:true }
-  )
-  res.json({ success:true })
-})
+  try {
+    const col = await dbService.getCollection('user-books')
+    await col.updateOne(
+      { userId: new ObjectId(req.user.userId), bookId: new ObjectId(req.body.bookId) },
+      { $set:{ status:req.body.status, addedAt:new Date(req.body.addedAt), rating:req.body.rating } },
+      { upsert:true }
+    )
+    res.status(200).json();
+  }
+  catch (err) {
+    console.error('Ошибка при получении пользователя:', err);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
+});
 
 app.get('/api/user-books/book/:bookId', authenticateToken, async (req, res) => {
   const col = await dbService.getCollection('user-books')
