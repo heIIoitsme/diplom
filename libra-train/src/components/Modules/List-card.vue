@@ -28,8 +28,17 @@
         <tbody>
           <tr v-for="(entry, index) in sortedEntries" :key="entry._id">
             <td>{{ index + 1 }}</td>
-            <td>{{ entry.book[0].title }}</td>
-            <td>{{ entry.rating || '-' }}</td>
+            <td><router-link :to="`/book/${entry.book[0]._id}`" class="router-link-custom">{{ entry.book[0].title }}</router-link></td>
+            <td class="rating-cell">
+            <div v-if="editingId === entry._id" class="rating-select">
+              <select v-model="editedRating" @change="saveRating(entry)">
+                <option v-for="n in 5" :key="n" :value="n">{{ n }}</option>
+              </select>
+            </div>
+            <div v-else @click="startEditing(entry)" class="rating-display">
+              {{ entry.rating || '—' }}
+            </div>
+          </td>
             <td>{{ entry.book[0].genre?.[0] || '—' }}</td>
             <td>{{ entry.book[0].publishedYear }} г.</td>
           </tr>
@@ -41,8 +50,12 @@
 <script setup>
 
 import { ref, computed } from 'vue';
+import axios from 'axios'
 
- const props = defineProps({
+const editingId    = ref(null)
+const editedRating = ref(null)
+
+const props = defineProps({
     title: String,
     entries: Array
 })
@@ -94,6 +107,41 @@ const sortedEntries = computed(() => {
     return sortDirection.value === 'asc' ? comparison : -comparison;
   });
 });
+
+function startEditing(entry) {
+  editingId.value = entry._id
+  editedRating.value = entry.rating
+}
+
+async function saveRating(entry) {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    alert('Пожалуйста, войдите в систему');
+    return;
+  }
+
+  const bookId = entry.bookId; // ❗️строго аналогично route.params.id из selectStatus
+
+  try {
+    await axios.post(
+      `${process.env.VUE_APP_API_URL}/api/user-books`,
+      {
+        bookId,
+        status: entry.status,
+        rating: Number(editedRating.value),
+        addedAt: entry.addedAt || new Date()
+      },
+      {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+    );
+
+    entry.rating = Number(editedRating.value);
+    editingId.value = null;
+  } catch (e) {
+    console.error('Ошибка обновления оценки:', e.response?.data || e.message);
+  }
+}
 </script>
   
 <style scoped>
@@ -184,5 +232,14 @@ const sortedEntries = computed(() => {
 
   .list-table th.active-sort {
   text-decoration: underline #fff !important;
+}
+
+.router-link-custom{
+  text-decoration: none;
+  display: inline-block;
+  color: inherit;
+}
+.router-link-custom:hover{
+  text-decoration: underline;
 }
 </style>

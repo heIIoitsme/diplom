@@ -114,7 +114,7 @@ const readCount = computed(() =>
 const favoriteGenre = computed(() => {
   const genreCount = {}
   userBooks.value.forEach(entry => {
-    const genres = entry.book?.genre || []
+    const genres = entry.book?.[0]?.genre || []
     genres.forEach(g => {
       genreCount[g] = (genreCount[g] || 0) + 1
     })
@@ -190,6 +190,7 @@ const favoriteGenre = computed(() => {
 .title {
   font-size: 40px;
   margin-bottom: 10px;
+  margin-top: 10px;
 }
 
 .rating-block {
@@ -216,7 +217,7 @@ const favoriteGenre = computed(() => {
 
 .bar-fill {
   position: relative;
-  height: 20px;
+  height: 18px;
   background: #000;
   border-radius: 10px;
   transition: width 0.3s;
@@ -229,21 +230,22 @@ const favoriteGenre = computed(() => {
   top: 50%;
   transform: translateY(-50%);
   color: #fff;
-  font-size: 16px;
+  font-size: 14px;
   text-align: right;
   width: calc(100% - 16px);
 }
 
 .bar-score {
-  font-size: 16px;
+  font-size: 14px;
   color: #333;
   text-align: left;
 }
 
 .genre-block .value,
 .read-block .value {
-  font-size: 22px;
+  font-size: 32px;
   font-weight: bold;
   text-align: center;
+  margin-top: 40px;
 }
 </style>
