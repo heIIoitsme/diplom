@@ -140,7 +140,6 @@ export default {
         // 4. Успешный вход:
         // — сохраняем JWT и флаг
         localStorage.setItem('token', result.token);
-        localStorage.setItem('isLoggedIn', 'true');
 
         // — уведомляем Header.vue
         this.$emit('login-success', result);

@@ -89,6 +89,7 @@
 <script>
 import books from '@/database/books.json'
 import LoginModal from '@/components/LoginModal.vue'
+import { jwtDecode } from 'jwt-decode'
 
 export default {
   name: 'LibraHeader',
@@ -101,11 +102,20 @@ export default {
       showDropdown: false,
       allBooks: books,
       showLoginModal: false,
-      isLoggedIn: false,
-      showProfileMenu: false
+      showProfileMenu: false,
+      token: localStorage.getItem('token') || '',
     }
   },
   computed: {
+  isLoggedIn() {
+    if (!this.token) return false
+    try {
+      const { exp } = jwtDecode(this.token)
+      return Date.now() < exp * 1000
+    } catch {
+      return false
+    }
+  },
     filteredBooks() {
       if (!this.searchQuery) return []
       const q = this.searchQuery.toLowerCase().trim()
@@ -115,7 +125,7 @@ export default {
           (b.author && b.author.toLowerCase().includes(q))
         )
         .slice(0, 5)
-    }
+    },
   },
   methods: {
     // Поиск
@@ -144,26 +154,22 @@ export default {
       this.showProfileMenu = false
     },
     handleLogout() {
-      this.isLoggedIn = false
-      localStorage.removeItem('isLoggedIn')
-      localStorage.removeItem('token')
-      this.closeProfileMenu()
-      this.$router.push('/')
+      localStorage.removeItem('token')     // 1. Удаляем токен
+      this.showProfileMenu = false
+      this.token = ''         // 2. Прячем меню
+      this.showLoginModal = false          // 3. Закрываем модалку
+      this.$router.push('/')               // 4. Перенаправляем, если нужно
+
+      // 5. Форсируем перерендер (если нужно, но скорее всего не понадобится)
+      this.$forceUpdate()
+      console.log('Текущий токен:', localStorage.getItem('token'))
     },
 
-    // ОБРАБОТКА УСПЕШНОГО ЛОГИНА (LoginModal.vue эмитит login-success)
     handleLoginSuccess(serverResponse) {
-      // serverResponse содержит { token, userId, ... }
-      console.log('Успешный вход:', serverResponse)
-      // Сохраняем флаг входа (токен уже был сохранён в LoginModal.vue)
-      this.isLoggedIn = true
-      // Закрываем модалку
+      this.token = serverResponse.token
       this.showLoginModal = false
+      // Никакого this.token = ...
     },
-
-    checkAuth() {
-      this.isLoggedIn = localStorage.getItem('isLoggedIn') === 'true'
-    }
   },
   directives: {
     'click-outside': {
@@ -178,8 +184,19 @@ export default {
       }
     }
   },
-  mounted() {
-    this.checkAuth()
+mounted() {
+  // Здесь можно обновить токен из localStorage, если нужно
+    this.token = localStorage.getItem('token') || ''
+    try {
+      const { exp } = jwtDecode(this.token)
+      if (Date.now() >= exp * 1000) {
+        localStorage.removeItem('token')
+        this.token = ''
+      }
+    } catch {
+      localStorage.removeItem('token')
+      this.token = ''
+    }
   }
 }
 </script>
