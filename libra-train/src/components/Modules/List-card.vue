@@ -30,15 +30,22 @@
             <td>{{ index + 1 }}</td>
             <td><router-link :to="`/book/${entry.book[0]._id}`" class="router-link-custom">{{ entry.book[0].title }}</router-link></td>
             <td class="rating-cell">
-            <div v-if="editingId === entry._id" class="rating-select">
-              <select v-model="editedRating" @change="saveRating(entry)">
-                <option v-for="n in 5" :key="n" :value="n">{{ n }}</option>
-              </select>
-            </div>
-            <div v-else @click="startEditing(entry)" class="rating-display">
-              {{ entry.rating || '—' }}
-            </div>
-          </td>
+              <div v-if="isPrivateListsPage && editingId === entry._id" class="rating-select">
+                <select v-model="editedRating" @change="saveRating(entry)">
+                  <option v-for="n in 5" :key="n" :value="n">{{ n }}</option>
+                </select>
+              </div>
+              <div
+                v-else-if="isPrivateListsPage"
+                @click="startEditing(entry)"
+                class="rating-display"
+              >
+                {{ entry.rating || '—' }}
+              </div>
+              <div v-else class="rating-display-disabled">
+                {{ entry.rating || '—' }}
+              </div>
+            </td>
             <td>{{ entry.book[0].genre?.[0] || '—' }}</td>
             <td>{{ entry.book[0].publishedYear }} г.</td>
           </tr>
@@ -50,10 +57,14 @@
 <script setup>
 
 import { ref, computed } from 'vue';
+import { useRoute } from 'vue-router'
 import axios from 'axios'
 
+const route = useRoute()
 const editingId    = ref(null)
 const editedRating = ref(null)
+
+const isPrivateListsPage = computed(() => route.path === '/profile/lists')
 
 const props = defineProps({
     title: String,
@@ -109,6 +120,7 @@ const sortedEntries = computed(() => {
 });
 
 function startEditing(entry) {
+  if (!isPrivateListsPage.value) return
   editingId.value = entry._id
   editedRating.value = entry.rating
 }
