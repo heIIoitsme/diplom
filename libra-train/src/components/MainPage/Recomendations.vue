@@ -1,6 +1,6 @@
 <template>
     <div class="fullmodule">
-      <router-link :to="`/book/`" class="router-link-custom"><span class="headline"> Рекомендации </span></router-link>
+      <router-link :to="`/books/`" class="router-link-custom"><span class="headline"> Что почитать? </span></router-link>
             <div v-if="books.length" class="books-grid">
             <BookCard 
                 v-for="book in books.slice(0, 7)" 

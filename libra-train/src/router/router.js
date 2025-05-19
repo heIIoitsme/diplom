@@ -9,6 +9,7 @@ import UserProfile from '@/components/Public/UserProfile.vue';
 import FullBook from '@/components/FullBook.vue';
 import Lists from '@/components/Private/Lists.vue';
 import UserLists from '@/components/Public/UserLists.vue';
+import AllBooks from '@/components/AllBooks.vue';
 
 const routes = [
   {
@@ -63,6 +64,13 @@ const routes = [
     path: '/book/:id',
     name: 'FullBook',
     component: FullBook,
+    props: true,
+    meta: { title: 'Книга'}
+  },
+    {
+    path: '/books',
+    name: 'AllBooks',
+    component: AllBooks,
     props: true,
     meta: { title: 'Книга'}
   },

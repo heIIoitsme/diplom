@@ -90,7 +90,8 @@ const handleSort = (field) => {
 };
 
 const sortedEntries = computed(() => {
-  if (!sortBy.value) return props.entries;
+  if (!sortBy.value) 
+  return props.entries;
   
   return [...props.entries].sort((a, b) => {
     const getValue = (item, field) => {

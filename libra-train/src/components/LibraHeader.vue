@@ -24,7 +24,7 @@
           @click="goToBook(book._id)"
         >
           <div class="book-title">{{ book.title }}</div>
-          <div class="book-author">{{ book.author }}</div>
+          <div class="book-author">{{ book.author[0].fullName }}</div>
         </div>
         <div 
           v-if="filteredBooks.length > 3" 
@@ -87,9 +87,9 @@
 </template>
 
 <script>
-import books from '@/database/books.json'
 import LoginModal from '@/components/LoginModal.vue'
 import { jwtDecode } from 'jwt-decode'
+import axios from 'axios';
 
 export default {
   name: 'LibraHeader',
@@ -100,10 +100,12 @@ export default {
     return {
       searchQuery: '',
       showDropdown: false,
-      allBooks: books,
+      allBooks: [],
       showLoginModal: false,
       showProfileMenu: false,
       token: localStorage.getItem('token') || '',
+      isLoading: false,
+      searchError: null
     }
   },
   computed: {
@@ -119,27 +121,50 @@ export default {
     filteredBooks() {
       if (!this.searchQuery) return []
       const q = this.searchQuery.toLowerCase().trim()
-      return this.allBooks
-        .filter(b => 
-          b.title.toLowerCase().includes(q) ||
-          (b.author && b.author.toLowerCase().includes(q))
-        )
-        .slice(0, 5)
+      return this.allBooks.filter(b => 
+        (b.title && b.title.toLowerCase().includes(q)) ||
+        (b.author && this.formatAuthor(b.author).toLowerCase().includes(q))
+      ).slice(0, 5)
     },
   },
   methods: {
     // Поиск
+    async loadAllBooks() {
+      try {
+        this.isLoading = true
+        const response = await axios.get(
+          `${process.env.VUE_APP_API_URL}/api/books`
+        )
+        this.allBooks = response.data
+      } catch (error) {
+        console.error('Ошибка загрузки книг:', error)
+        this.loadError = 'Не удалось загрузить данные'
+      } finally {
+        this.isLoading = false
+      }
+    },
+
+    formatAuthor(author) {
+      if (typeof author === 'string') return author
+      if (Array.isArray(author)) return author.map(a => a.fullName).join(', ')
+      return author?.fullName || 'Неизвестный автор'
+    },
+
     handleSearch() {
       this.showDropdown = true
     },
+
     goToSearchPage() {
       if (this.searchQuery.trim()) {
-        this.$router.push({ path: '/search', query: { q: this.searchQuery.trim() } })
-        this.closeDropdown()
+        this.$router.push({ 
+          path: '/search', 
+          query: { q: this.searchQuery.trim() } 
+        });
+        this.closeDropdown();
       }
     },
     goToBook(id) {
-      this.$router.push(`/books/${id}`)
+      this.$router.push(`/book/${id}`)
       this.closeDropdown()
     },
     closeDropdown() {
@@ -185,6 +210,7 @@ export default {
     }
   },
 mounted() {
+  this.loadAllBooks()
   // Здесь можно обновить токен из localStorage, если нужно
     this.token = localStorage.getItem('token') || ''
     try {

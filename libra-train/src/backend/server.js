@@ -1,7 +1,6 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-dotenv.config();
 import jwt from 'jsonwebtoken';
 import { ObjectId } from 'mongodb';
 import { dbService } from '../database/database.service.js';
