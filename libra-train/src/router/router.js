@@ -10,6 +10,7 @@ import FullBook from '@/components/FullBook.vue';
 import Lists from '@/components/Private/Lists.vue';
 import UserLists from '@/components/Public/UserLists.vue';
 import AllBooks from '@/components/AllBooks.vue';
+import AllCategoryBooks from '@/components/AllCategoryBooks.vue';
 
 const routes = [
   {
@@ -67,10 +68,17 @@ const routes = [
     props: true,
     meta: { title: 'Книга'}
   },
-    {
+  {
     path: '/books',
     name: 'AllBooks',
     component: AllBooks,
+    props: true,
+    meta: { title: 'Книга'}
+  },
+  {
+    path: '/category/:slug',
+    name: 'AllCategoryBooks',
+    component: AllCategoryBooks,
     props: true,
     meta: { title: 'Книга'}
   },
@@ -78,7 +86,10 @@ const routes = [
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes,
+  scrollBehavior(to, from, savedPosition) {
+    return { top: 0 }; // Всегда прокручивать наверх
+  }
 });
 
 router.beforeEach((to, from, next) => {

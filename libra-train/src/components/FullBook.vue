@@ -183,7 +183,7 @@ async function deleteEntry() {
   }
   .book_img {
     height: 220px;
-    width: 135px;
+    width: 163px;
     padding: 20px;
     border-radius: 30px;
   }

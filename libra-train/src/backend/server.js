@@ -97,7 +97,7 @@ app.post('/api/login', async (req, res) => {
 app.get('/api/books', async (req, res) => {
   const books = await dbService.find('book', {}, {
     sort: { createdAt: -1 },
-    limit: 10,
+    limit: 100,
     populate: [{ from: 'author', localField: 'author', foreignField: '_id', as: 'author' }]
   });
   res.status(200).json(books);

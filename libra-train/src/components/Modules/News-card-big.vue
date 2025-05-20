@@ -11,7 +11,7 @@
         loading="lazy" 
         />
         <div class="text_container">
-            <nameText class="newsname">{{ news.title }}</nameText>
+            <div class="newsname">{{ news.title }}</div>
         </div>
     </div></router-link>
   </template>

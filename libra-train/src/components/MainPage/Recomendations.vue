@@ -3,7 +3,7 @@
       <router-link :to="`/books/`" class="router-link-custom"><span class="headline"> Что почитать? </span></router-link>
             <div v-if="books.length" class="books-grid">
             <BookCard 
-                v-for="book in books.slice(0, 7)" 
+                v-for="book in orderedBooks.slice(0, 7)" 
                 :key="book._id" 
                 :book="book"
             />
@@ -25,12 +25,19 @@
     },
     async created() {
       try {
-        const response = await axios.get(`${process.env.VUE_APP_API_URL}/api/books`); 
+        const response = await axios.get(`${process.env.VUE_APP_API_URL}/api/books`); // https клиент, упрощает взаимодействие с запросами
         this.books = response.data
       } catch (error) {
         console.error('Ошибка загрузки книг:', error)
       }
     },
+    computed: {
+      orderedBooks() {
+        const withCover = this.books.filter(b => b.cover && b.cover !== 'noCover.png')
+        const withoutCover = this.books.filter(b => !b.cover || b.cover === 'noCover.png')
+        return [...withCover, ...withoutCover]
+      }
+    }
   }
   </script>
   

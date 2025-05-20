@@ -6,7 +6,7 @@
         loading="lazy" 
         :alt="category.title"
       />
-      <nameText class="categoryname">{{ category.title }}</nameText>
+      <div class="categoryname">{{ category.title }}</div>
   </div></router-link>
 </template>
   

@@ -1,6 +1,6 @@
 <template>
     <div class="fullmodule">
-      <router-link :to="`/category/`" class="router-link-custom"><span class="headline"> Категории </span></router-link>
+      <span class="headline"> Категории </span>
             <div v-if="categories.length" class="rec-grid">
             <CategoryCard
                 v-for="category in categories.slice(0, 7)" 

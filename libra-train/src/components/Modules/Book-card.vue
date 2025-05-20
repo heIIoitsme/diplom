@@ -8,12 +8,12 @@
     />
     <div class="text_container">
       <div class="cardheader">
-        <nameText class="bookname">{{ book.title }}</nameText>
-        <authorText class="authorname">{{ book.author[0].fullName }}</authorText>
+        <div class="bookname">{{ book.title }}</div>
+        <div class="authorname">{{ book.author[0].fullName }}</div>
       </div>
       <div class="cardfooter">
-        <stateText class="statename">{{ book.status }}</stateText>
-        <ratingText class="ratingname">{{ formattedRating }}</ratingText>
+        <div class="statename">{{ book.status }}</div>
+        <div class="ratingname">{{ formattedRating }}</div>
       </div>
     </div>
   </div></router-link>

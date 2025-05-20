@@ -1,136 +1,121 @@
 <template>
-  <div class="allPage" @scroll.passive="handleScroll" ref="scrollContainer">
+  <div class="allPage" ref="scrollContainer">
     <a1 class="page-title">Все книги</a1>
     <div class="mainInfo">
-      <div class="allBooks" @scroll.passive="handleScroll" ref="scrollContainer">
-            <!-- 1) Если есть отрисованные книги -->
-            <div v-if="displayedBooks.length" class="books-grid">
-            <BookCard
-                v-for="book in displayedBooks"
-                :key="book._id"
-                :book="book"
-            />
-            </div>
-
-            <!-- 2) Если книг в отфильтрованном списке нет (и фильтр применён) -->
-            <p 
-            v-else-if="!filteredBooks.length && selectedGenres.length"
-            class="no-results"
-            >
-            Нет результатов по выбранным критериям фильтрации
-            </p>
-
-            <!-- 3) Во всех прочих случаях (ещё загружаем) -->
-            <p v-else class="loading-text">Загрузка книг...</p>
+      <div class="allBooks">
+        <div v-if="displayedBooks.length" class="books-grid">
+          <BookCard
+            v-for="book in displayedBooks"
+            :key="book._id"
+            :book="book"
+          />
         </div>
+
+        <p 
+          v-else-if="!filteredBooks.length && selectedGenres.length"
+          class="no-results"
+        >
+          Нет результатов по выбранным критериям фильтрации
+        </p>
+
+        <p v-else class="loading-text">Загрузка книг...</p>
+      </div>
+
       <aside class="sortSettings">
-            <header class="filter-header">
-                <h2 class="sort-title">Фильтр</h2>
-                <button class="filter-reset" @click="resetFilters">Сбросить</button>
-            </header>
-            <section class="filter-section">
-                <h3 class="sort-item">Жанр</h3>
-                <ul class="filter-list">
-                    <li v-for="genre in genres" :key="genre">
-                        <label class="checkbox">
-                            <input type="checkbox" :value="genre" v-model="selectedGenres" />
-                            <span class="checkbox-custom"></span>
-                            <span class="checkbox-label">{{ genre }}</span>
-                        </label>
-                    </li>
-                </ul>
-            </section>
-        </aside>
+        <header class="filter-header">
+          <h2 class="sort-title">Фильтр</h2>
+          <button class="filter-reset" @click="resetFilters">Сбросить</button>
+        </header>
+        <section class="filter-section">
+          <h3 class="sort-item">Жанр</h3>
+          <ul class="filter-list">
+            <li v-for="genre in genres" :key="genre">
+              <label class="checkbox">
+                <input type="checkbox" :value="genre" v-model="selectedGenres" />
+                <span class="checkbox-custom"></span>
+                <span class="checkbox-label">{{ genre }}</span>
+              </label>
+            </li>
+          </ul>
+        </section>
+      </aside>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import axios from 'axios'
 import BookCard from '@/components/Modules/Book-card.vue'
 
-// 1) Все книги из БД
 const books = ref([])
+const selectedGenres = ref([])
+const loadStep = 18
+const loaded = ref(0)
 
-// 2) Жанры вычисляем динамически из поля genre всех книг
+// жанры
 const genres = computed(() => {
   const allGenres = books.value.flatMap(b => b.genre || [])
   return Array.from(new Set(allGenres))
 })
 
-// 3) Выбранные пользователем жанры
-const selectedGenres = ref([])
-
-// 4) Infinite scroll: шаг загрузки и счётчик
-const loadStep = 36
-const loaded = ref(0)
-const scrollContainer = ref(null)
-
-// 5) Список книг с учётом фильтрации по жанрам
-//    Если нет выбранных жанров — возвращаем все.
-//    Если есть — показываем только те книги, у которых массив genre содержит **все** выбранные жанры.
+// фильтрация
 const filteredBooks = computed(() => {
-  if (!selectedGenres.value.length) {
-    return books.value
-  }
-  return books.value.filter(book => {
-    const bookGenres = book.genre || []
-    return selectedGenres.value.every(g => bookGenres.includes(g))
-  })
+  if (!selectedGenres.value.length) return books.value
+  return books.value.filter(b =>
+    selectedGenres.value.every(g => (b.genre || []).includes(g))
+  )
 })
 
-// 6) Массив для рендера (slice от filteredBooks)
+// отображаемые книги
 const displayedBooks = computed(() =>
   filteredBooks.value.slice(0, loaded.value)
 )
 
-// 7) Функция подгрузки следующей порции
 function loadMore() {
-  const remaining = filteredBooks.value.length - loaded.value
-  const toLoad = Math.min(loadStep, remaining)
-  if (toLoad > 0) {
-    loaded.value += toLoad
-  }
+  const remain = filteredBooks.value.length - loaded.value
+  const inc = Math.min(loadStep, remain)
+  if (inc > 0) loaded.value += inc
 }
 
-// 8) Обработчик скролла
-function handleScroll() {
-  const el = scrollContainer.value
-  if (!el) return
-  if (el.scrollTop + el.clientHeight >= el.scrollHeight - 50) {
+function onScroll() {
+  const scrollY = window.scrollY || document.documentElement.scrollTop
+  const viewportH = window.innerHeight
+  const fullH = document.documentElement.scrollHeight
+
+  if (scrollY + viewportH >= fullH - 50) {
     loadMore()
   }
 }
 
-// 9) Сброс фильтров
-function resetFilters() {
-  selectedGenres.value = []
-  loaded.value = 0
-  if (scrollContainer.value) {
-    scrollContainer.value.scrollTop = 0
-  }
-  loadMore()
-}
-
-// 10) Перезагрузка при смене фильтра
 watch(selectedGenres, () => {
   loaded.value = 0
-  if (scrollContainer.value) {
-    scrollContainer.value.scrollTop = 0
-  }
   loadMore()
 })
 
-// 11) При монтировании загружаем книги и первую порцию
+watch(books, () => {
+  loaded.value = 0
+  loadMore()
+})
+
+function resetFilters() {
+  selectedGenres.value = []
+  loaded.value = 0
+  loadMore()
+}
+
 onMounted(async () => {
   try {
     const res = await axios.get(`${process.env.VUE_APP_API_URL}/api/books`)
     books.value = res.data
-    loadMore()
+    window.addEventListener('scroll', onScroll, { passive: true })
   } catch (e) {
     console.error('Ошибка загрузки книг:', e)
   }
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', onScroll)
 })
 </script>
 
@@ -141,7 +126,6 @@ onMounted(async () => {
   align-items: center;
   padding: 40px;
   height: 100vh;
-  overflow-y: auto;
 }
 
 .page-title {
@@ -155,6 +139,7 @@ onMounted(async () => {
   display: flex;
   width: 100%;
   max-width: 1400px;
+  align-items: flex-start;
 }
 
 .allBooks {
@@ -169,7 +154,7 @@ onMounted(async () => {
 
 .sortSettings {
   position: sticky;
-  top: 40px;
+  top: 100px;
   border-radius: 20px;
   width: 250px;
   background-color: #fff;
