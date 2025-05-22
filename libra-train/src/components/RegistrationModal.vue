@@ -1,6 +1,6 @@
 <template>
+  <div class="register-title">Регистрация</div>
   <form @submit.prevent="submit" class="registration-form">
-    <!-- Email -->
     <div class="form-group">
       <input
         type="email"
@@ -68,6 +68,7 @@ import { required, email, minLength, maxLength, helpers } from '@vuelidate/valid
 import axios from 'axios'
 import hideIcon from '@/assets/pass-hide.svg'
 import viewIcon from '@/assets/pass-view.svg'
+import { useRouter } from 'vue-router'
 
 const alphaNum = helpers.regex(/^[a-zA-Z0-9_]*$/)
 const passwordRegex = helpers.regex(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$/)
@@ -75,7 +76,8 @@ const passwordRegex = helpers.regex(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}$/)
 export default {
   name: 'RegistrationModal',
   setup() {
-    return { v$: useVuelidate() }
+    const router = useRouter()
+    return { v$: useVuelidate(), router }
   },
   data() {
     return {
@@ -98,17 +100,17 @@ export default {
     return {
       formData: {
         email: { 
-          required: helpers.withMessage('Поле обязательно', required),
+          required: helpers.withMessage('Обязательное поле', required),
           email: helpers.withMessage('Некорректный email', email)
         },
         username: {
-          required: helpers.withMessage('Поле обязательно', required),
+          required: helpers.withMessage('Обязательное поле', required),
           minLength: helpers.withMessage('Минимум 3 символа', minLength(3)),
           maxLength: helpers.withMessage('Максимум 20 символов', maxLength(20)),
           alphaNum: helpers.withMessage('Только буквы и цифры', alphaNum)
         },
         password: {
-          required: helpers.withMessage('Поле обязательно', required),
+          required: helpers.withMessage('Обязательное поле', required),
           minLength: helpers.withMessage('Минимум 6 символов', minLength(6)),
           validPassword: helpers.withMessage(
             'Должна быть минимум 1 цифра, 1 заглавная и 1 строчная буква', 
@@ -135,55 +137,55 @@ export default {
     },
     
     async submit() {
-  if (this.isSubmitting) return;
+      if (this.isSubmitting) return;
+      
+      this.serverErrors = { email: '', username: '' };
+      const isValid = await this.v$.$validate();
+      
+      if (!isValid) return;
   
-  this.serverErrors = { email: '', username: '' };
-  const isValid = await this.v$.$validate();
+      this.isSubmitting = true;
   
-  if (!isValid) return;
-
-  this.isSubmitting = true;
-
-  try {
-    const response = await axios.post(
-      `${process.env.VUE_APP_API_URL}/api/register`,
-      {
-        email: this.formData.email,
-        username: this.formData.username,
-        password: this.formData.password
+      try {
+        const response = await axios.post(
+          `${process.env.VUE_APP_API_URL}/api/register`,
+          {
+            email: this.formData.email,
+            username: this.formData.username,
+            password: this.formData.password
+          }
+        );
+  
+        switch (response.status) {
+          case 201:
+            this.$emit('registration-success');
+            this.showNotification('Регистрация прошла успешно!', 'success');
+            this.resetForm();
+            this.router.push('/');
+            break;
+            
+          case 204:
+            this.showNotification('Данные успешно обработаны', 'info');
+            break;
+            
+          default:
+            this.showNotification('Неизвестный ответ сервера', 'warning');
+        }
       }
-    );
-
-    // Обработка разных статусов
-    switch (response.status) {
-      case 201:
-        this.$emit('registration-success');
-        this.showNotification('Регистрация прошла успешно!', 'success');
-        this.resetForm();
-        break;
-        
-      case 204:
-        this.showNotification('Данные успешно обработаны', 'info');
-        break;
-        
-      default:
-        this.showNotification('Неизвестный ответ сервера', 'warning');
-    }}
-     
-    catch (error) {
-      this.handleRegistrationError(error);
-    } 
-    finally {
-      this.isSubmitting = false;
-    }
-  },
-
+      catch (error) {
+        this.handleRegistrationError(error);
+      } 
+      finally {
+        this.isSubmitting = false;
+      }
+    },
+  
     handleRegistrationError(error) {
       if (!error.response) {
         this.showNotification('Ошибка сети. Проверьте соединение', 'error')
         return
       }
-
+  
       const { status, data } = error.response
       
       switch (status) {
@@ -205,12 +207,12 @@ export default {
           this.showNotification('Ошибка сервера. Попробуйте позже', 'error')
       }
     },
-
+  
     resetForm() {
       this.formData = { email: '', username: '', password: '' }
       this.v$.$reset()
     },
-
+  
     showNotification(message, type) {
       this.$notify({
         title: type === 'success' ? 'Успех!' : 'Ошибка!',
@@ -224,6 +226,10 @@ export default {
 </script>
 
 <style scoped>
+.register-title {
+  font-size: 48px;
+}
+
 .form-group {
   width: 600px;
   display: flex;

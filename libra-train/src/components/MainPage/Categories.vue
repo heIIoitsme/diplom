@@ -39,8 +39,11 @@ import axios from 'axios';
   .rec-grid {
     display: flex;
     gap: 25px;
-    max-width: 2000px;
-    height: 315px;
+  width: 100%;
+  height: 315px;
+  overflow-x: hidden; /* скрыть выходящее по ширине */
+  flex-wrap: nowrap;
+  overflow-x: auto;
   }
   .headline {
     font-family: 'Kreadon';
@@ -50,6 +53,8 @@ import axios from 'axios';
   .fullmodule {
     display: flex;
     flex-direction: column;
+    width: 100%;
+    max-width: 1240px;
     gap:10px;
   }
   .router-link-custom{

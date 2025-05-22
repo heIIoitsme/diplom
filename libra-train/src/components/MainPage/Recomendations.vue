@@ -45,12 +45,15 @@ export default {
 </script>
   
   <style scoped>
-  .books-grid {
-    display: flex;
-    gap: 55px;
-    max-width: 2000px;
-    height: 260px;
-  }
+.books-grid {
+  display: flex;
+  gap: 55px;
+  width: 100%;
+  height: 280px;
+  overflow-x: hidden; /* скрыть выходящее по ширине */
+  flex-wrap: nowrap;
+  overflow-x: auto;
+}
   .headline {
     font-family: 'Kreadon';
     font-size: 40px;
@@ -59,6 +62,8 @@ export default {
   .fullmodule {
     display: flex;
     flex-direction: column;
+    width: 100%;
+    max-width: 1240px;
     gap:10px;
   }
   .router-link-custom{

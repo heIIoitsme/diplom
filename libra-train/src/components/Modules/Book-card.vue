@@ -43,7 +43,7 @@ export default {
 }
 .card_container {
   width: 130px;
-  height: 260px;
+  height: 280px;
   border-radius: 10px;
   outline:1px solid #C8C8C8;
   outline-offset: -1px ;
@@ -67,9 +67,10 @@ export default {
 }
 .image {
   width: 130px;
-  height: 175px;
+  height: 185px;
   border-radius: 10px;
   z-index: 2;
+  object-fit: cover;
 }
 .bookname {
   font-family: 'Kreadon';

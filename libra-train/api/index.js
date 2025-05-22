@@ -3,8 +3,8 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
 import { ObjectId } from 'mongodb';
-import { dbService } from '../src/backend/database/database.service.js';
-import { recalcBookRating } from '../src/backend/database/rating.service.js';
+import { dbService } from '../src/database/database.service.js';
+import { recalcBookRating } from '../src/database/rating.service.js';
 import { authenticateToken } from '../src/backend/middleware/authMiddleware.js';
 
 dotenv.config();

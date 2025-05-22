@@ -24,6 +24,7 @@
   
   <style scoped>
   .categoryname {
+    position: absolute;
     font-family: 'Kreadon';
     font-size: clamp(1rem, 9vw, 1.5rem); /* Минимальный размер 1rem, максимальный 2rem */
     text-align: center;
@@ -32,8 +33,9 @@
     width: 150px;
   }
   .card_container {
+    position: relative;
     width: 155px;
-    height: 300px;
+    height: 315px;
     border-radius: 30px;
     display: flex;
     flex-direction: column;
@@ -45,11 +47,11 @@
   transform: translateY(-3px);
   }
   .card_container img {
-    position: absolute;
     width: 155px;
-    height: 300px;
+    height: 315px;
     border-radius: 30px;
     z-index: 1;
+    text-align: center;
   }
   .router-link-custom {
   text-decoration: none;

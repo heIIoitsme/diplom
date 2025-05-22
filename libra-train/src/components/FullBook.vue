@@ -46,6 +46,9 @@
 import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import axios from 'axios'
+import { useNotification } from '@kyvg/vue3-notification'
+
+const { notify } = useNotification()
 
 const route = useRoute()
 const book = ref(null)
@@ -102,7 +105,12 @@ async function selectStatus(status) {
   try {
     const token = localStorage.getItem('token')
     if (!token) {
-      alert('Пожалуйста, войдите в систему')
+      notify({
+        title: 'Внимание!',
+        text: 'Войдите или зарегистрируйтесь',
+        type: 'warning',
+        duration: 2000
+      })
       return
     }
     const bookId = route.params.id
@@ -183,9 +191,10 @@ async function deleteEntry() {
   }
   .book_img {
     height: 220px;
-    width: 163px;
+    width: 150px;
     padding: 20px;
     border-radius: 30px;
+    object-fit: cover;
   }
 
   .dropdown-wrapper {

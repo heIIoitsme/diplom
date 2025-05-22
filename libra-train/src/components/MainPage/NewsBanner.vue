@@ -57,11 +57,12 @@
     flex-direction: row;
     gap: 20px;
   }
-  .news-small-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
+.news-small-grid {
+  display: flex;
+  flex-direction: column;       /* Позволяет карточкам переноситься */
+  gap: 10px;
+  justify-content: center;
+}
   .headline {
     font-family: 'Kreadon';
     font-size: 40px;
@@ -70,10 +71,32 @@
   .fullmodule {
     display: flex;
     flex-direction: column;
+    width: 100%;
+    max-width: 1240px;
     gap:10px;
   }
   .router-link-custom{
     text-decoration: none;
     display: inline-block;
   }
+
+  
+@media (max-width: 1399px) {
+  .news-small-grid {
+  display: none;
+}
+.news-big-grid {
+  gap: clamp(10px, 20vw, 300px);
+}
+.news-container {
+  justify-content: center; /* Центровка по горизонтали */
+  align-items: center;
+}
+}
+
+@media (max-width: 999px) {
+  .news-big-grid {
+  gap: clamp(10px, 5vw, 300px);
+}
+}
   </style>

@@ -46,116 +46,131 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'LoginModal',
-  data() {
-    return {
-      formData: {
-        username: '',
-        password: ''
-      },
-      errors: {
-        username: '',
-        password: ''
-      },
-      invalidFields: {
-        username: false,
-        password: false
-      },
-      errorMessage: ''
-    };
-  },
-  computed: {
-    isFormValid() {
-      return (
-        Object.values(this.errors).every(e => e === '') &&
-        this.formData.username.trim() &&
-        this.formData.password.trim()
-      );
-    }
-  },
-  methods: {
-    close() {
-      this.$emit('close');
-    },
-    validateUsername() {
-      const raw = this.formData.username;
-      const clean = raw.trim().replace(/[<>"'&/\\]/g, '').replace(/\s+/g, '');
-      if (clean !== raw) this.formData.username = clean;
+<script setup>
+import { ref, computed } from 'vue'
+import { notify } from '@kyvg/vue3-notification'
+import { useRouter } from 'vue-router'
 
-      if (!clean) {
-        this.errors.username = 'Логин обязателен';
-        this.invalidFields.username = true;
-      } else if (clean.length < 3) {
-        this.errors.username = 'Логин должен быть не менее 3 символов';
-        this.invalidFields.username = true;
-      } else if (!/^[a-zA-Z0-9_]+$/.test(clean)) {
-        this.errors.username = 'Можно использовать только буквы, цифры и подчеркивание';
-        this.invalidFields.username = true;
-      } else {
-        this.errors.username = '';
-        this.invalidFields.username = false;
-      }
-    },
-    validatePassword() {
-      const val = this.formData.password.trim();
-      if (!val) {
-        this.errors.password = 'Пароль обязателен';
-        this.invalidFields.password = true;
-      } else if (val.length < 6) {
-        this.errors.password = 'Пароль должен быть не менее 6 символов';
-        this.invalidFields.password = true;
-      } else {
-        this.errors.password = '';
-        this.invalidFields.password = false;
-      }
-    },
-    async submit() {
-      // 1. Валидация
-      this.validateUsername();
-      this.validatePassword();
-      if (!this.isFormValid) return;
+const router = useRouter()
+const emit = defineEmits(['close', 'login-success'])
 
-      // 2. Подготовка данных
-      const payload = {
-        username: this.formData.username,
-        password: this.formData.password
-      };
+const formData = ref({
+  username: '',
+  password: ''
+})
 
-      try {
-        // 3. Отправка на сервер
-        const res = await fetch(`${process.env.VUE_APP_API_URL}/api/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        const result = await res.json();
+const errors = ref({
+  username: '',
+  password: ''
+})
 
-        if (!res.ok) {
-          this.errorMessage = result.error || 'Ошибка авторизации';
-          return;
-        }
+const invalidFields = ref({
+  username: false,
+  password: false
+})
 
-        // 4. Успешный вход:
-        // — сохраняем JWT и флаг
-        localStorage.setItem('token', result.token);
+const errorMessage = ref('')
 
-        // — уведомляем Header.vue
-        this.$emit('login-success', result);
+const isFormValid = computed(() => {
+  return (
+    Object.values(errors.value).every(e => e === '') &&
+    formData.value.username.trim() &&
+    formData.value.password.trim()
+  )
+})
 
-        // — чистим форму и закрываем
-        this.formData.username = '';
-        this.formData.password = '';
-        this.errorMessage = '';
-        this.close();
-      } catch (err) {
-        console.error('Ошибка при запросе авторизации:', err);
-        this.errorMessage = 'Ошибка сервера. Попробуйте позже.';
-      }
-    }
+function close() {
+  emit('close')
+}
+
+function validateUsername() {
+  const raw = formData.value.username
+  const clean = raw.trim().replace(/[<>"'&/\\]/g, '').replace(/\s+/g, '')
+  if (clean !== raw) formData.value.username = clean
+
+  if (!clean) {
+    errors.value.username = 'Логин обязателен'
+    invalidFields.value.username = true
+  } else if (clean.length < 3) {
+    errors.value.username = 'Логин должен быть не менее 3 символов'
+    invalidFields.value.username = true
+  } else if (!/^[a-zA-Z0-9_]+$/.test(clean)) {
+    errors.value.username = 'Можно использовать только буквы, цифры и подчеркивание'
+    invalidFields.value.username = true
+  } else {
+    errors.value.username = ''
+    invalidFields.value.username = false
   }
-};
+}
+
+function validatePassword() {
+  const val = formData.value.password.trim()
+  if (!val) {
+    errors.value.password = 'Пароль обязателен'
+    invalidFields.value.password = true
+  } else if (val.length < 6) {
+    errors.value.password = 'Пароль должен быть не менее 6 символов'
+    invalidFields.value.password = true
+  } else {
+    errors.value.password = ''
+    invalidFields.value.password = false
+  }
+}
+
+async function submit() {
+  validateUsername()
+  validatePassword()
+  if (!isFormValid.value) return
+
+  const payload = {
+    username: formData.value.username,
+    password: formData.value.password
+  }
+
+  try {
+    const res = await fetch(`${process.env.VUE_APP_API_URL}/api/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+    const result = await res.json()
+
+    if (!res.ok) {
+      errorMessage.value = result.error || 'Ошибка авторизации'
+      notify({
+        title: 'Ошибка',
+        text: errorMessage.value,
+        type: 'error'
+      })
+      return
+    }
+
+    localStorage.setItem('token', result.token)
+    emit('login-success', result)
+
+    notify({
+      title: 'Успех',
+      text: 'Вы успешно вошли!',
+      type: 'success'
+    })
+
+    // Переадресация на главную страницу
+    router.push('/')
+
+    formData.value.username = ''
+    formData.value.password = ''
+    errorMessage.value = ''
+    close()
+  } catch (err) {
+    console.error('Ошибка при запросе авторизации:', err)
+    errorMessage.value = 'Ошибка сервера. Попробуйте позже.'
+    notify({
+      title: 'Ошибка',
+      text: errorMessage.value,
+      type: 'error'
+    })
+  }
+}
 </script>
 
   

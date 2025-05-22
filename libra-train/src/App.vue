@@ -2,6 +2,7 @@
   <div id="app">
     <LibraHeader />
     <router-view />
+    <notifications position="top right" />
   </div>
 </template>
 
