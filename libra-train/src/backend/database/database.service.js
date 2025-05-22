@@ -20,7 +20,7 @@ class DatabaseService {
       });
 
       await this.client.connect();
-      this.db = this.client.db(process.env.VUE_APP_DB_NAME);
+      this.db = this.client.db(process.env.DB_NAME);
       this.isConnected = true;
       console.log('✅ MongoDB connected');
       return this.db;

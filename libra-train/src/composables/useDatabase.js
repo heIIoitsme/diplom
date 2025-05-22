@@ -1,4 +1,4 @@
-import { dbService } from '../database/database.service';
+import { dbService } from '../backend/database/database.service';
 
 export const useDatabase = () => {
   const getUser = async () => {

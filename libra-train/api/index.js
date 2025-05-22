@@ -3,7 +3,8 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
 import { ObjectId } from 'mongodb';
-import { dbService } from '../src/database/database.service.js';
+import { dbService } from '../src/backend/database/database.service.js';
+import { recalcBookRating } from '../src/backend/database/rating.service.js';
 import { authenticateToken } from '../src/backend/middleware/authMiddleware.js';
 
 dotenv.config();
@@ -224,6 +225,8 @@ app.post('/api/user-books', authenticateToken, async (req, res) => {
       { upsert:true }
     )
     res.status(200).json();
+    await recalcBookRating(req.body.bookId);
+    console.log('→ POST /api/user-books: recalcBookRating completed for', req.body.bookId);
   }
   catch (err) {
     console.error('Ошибка при получении пользователя:', err);
