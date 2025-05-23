@@ -7,7 +7,9 @@
                   :src="require(`@/assets/covers/anna-karenina.jpeg`)"
                   loading="lazy" 
                 />
-                <h1 class="nickname">{{ user.username }}</h1>
+                <router-link :to="`/user/${user.username}`" class="router-link-custom">
+                    <h1 class="nickname">{{ user.username }}</h1>
+                </router-link>
             </div>
             <div class="profile_other">
                 <div class="profile_second">
@@ -145,6 +147,12 @@ export default {
     text-align: center;
     margin: 0px
 }
+
+  .router-link-custom{
+    text-decoration: none;
+    display: inline-block;
+    color: inherit;
+  }
 
 @media (max-width: 1500px) {
 .profile_full {

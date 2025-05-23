@@ -1,10 +1,7 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import axios from 'axios'          // ← добавляем
 
-/**
- * Хук для загрузки профиля пользователя и проверки авторизации.
- * Возвращает ref user и ref error.
- */
 export function useProfile() {
   const user = ref(null)
   const error = ref('')
@@ -13,7 +10,6 @@ export function useProfile() {
   onMounted(async () => {
     const token = localStorage.getItem('token')
     if (!token) {
-      // Если нет токена — перенаправляем на регистрацию
       return router.replace('/register')
     }
 
@@ -24,11 +20,13 @@ export function useProfile() {
       )
 
       if (!res.ok) {
-        // Токен просрочен или недействителен
         return router.replace('/register')
       }
 
       user.value = await res.json()
+
+      // ← После успешного получения профиля ставим токен в axios по умолчанию:
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
     } catch (e) {
       error.value = 'Не удалось загрузить профиль'
       console.error('useProfile error:', e)

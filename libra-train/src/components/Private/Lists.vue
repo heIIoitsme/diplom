@@ -6,7 +6,9 @@
         :src="require(`@/assets/covers/anna-karenina.jpeg`)"
         loading="lazy"
       />
-      <h1 class="nickname">{{ user.username }}</h1>
+      <router-link :to="`/profile`" class="router-link-custom">
+        <h1 class="nickname">{{ user.username }}</h1>
+      </router-link>
     </div>
 
     <div class="stata_main">
@@ -248,4 +250,10 @@ const favoriteGenre = computed(() => {
   text-align: center;
   margin-top: 40px;
 }
+
+  .router-link-custom{
+    text-decoration: none;
+    display: inline-block;
+    color: inherit;
+  }
 </style>

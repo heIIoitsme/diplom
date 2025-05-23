@@ -253,6 +253,21 @@ app.delete('/api/user-books/:bookId', authenticateToken, async (req, res) => {
   res.json({ success:true })
 })
 
+app.get('/api/user-books/all', authenticateToken, async (req, res) => {
+  try {
+    // разрешаем только admin
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Доступ запрещён' });
+    }
+    const col = await dbService.getCollection('user-books');
+    const all = await col.find().toArray();
+    res.json(all);
+  } catch (err) {
+    console.error('Ошибка при получении всех user-books:', err);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
+});
+
 // --- Запуск сервера
 app.listen(port, () => {
   console.log(`Сервер запущен на http://localhost:${port}`);
