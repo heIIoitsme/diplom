@@ -287,7 +287,7 @@ export default {
 .submit-btn {
   width: 100%;
   padding: 12px;
-  background: #000;
+  background: #1a1a1a;
   color: white;
   border: none;
   border-radius: 15px;

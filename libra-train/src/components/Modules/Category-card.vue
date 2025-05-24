@@ -28,7 +28,7 @@
     font-family: 'Kreadon';
     font-size: clamp(1rem, 9vw, 1.5rem); /* Минимальный размер 1rem, максимальный 2rem */
     text-align: center;
-    color: #000000;
+    color: #1a1a1a;
     z-index: 2;
     width: 150px;
   }

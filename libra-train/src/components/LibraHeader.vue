@@ -327,7 +327,7 @@ mounted() {
 .loginButton {
   width: 120px;
   height: 30px;
-  background-color: black;
+  background-color: #1a1a1a;
   border-radius: 15px;
   margin-right: 30px;
   box-shadow: 0px 3px 0px 0px rgba(0, 0, 0, 0.25);

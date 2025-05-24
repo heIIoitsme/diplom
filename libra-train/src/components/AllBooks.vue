@@ -187,7 +187,7 @@ onBeforeUnmount(() => {
 .filter-reset {
   font-size: 14px;
   font-family: Kreadon;
-  background: #000;
+  background: #1a1a1a;
   color: #FFF;
   border: none;
   border-radius: 12px;
@@ -222,7 +222,7 @@ onBeforeUnmount(() => {
 .checkbox-custom {
   width: 15px !important;
   height: 15px ;
-  border: 2px solid #000;
+  border: 2px solid #1a1a1a;
   border-radius: 4px;
   margin-right: 10px;
   position: relative;
@@ -235,7 +235,7 @@ onBeforeUnmount(() => {
   left: 2px;
   width: 11px;
   height: 11px;
-  background: #000;
+  background: #1a1a1a;
   border-radius: 2px;
 }
 

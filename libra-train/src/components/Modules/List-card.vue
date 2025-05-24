@@ -90,8 +90,7 @@ const handleSort = (field) => {
 };
 
 const sortedEntries = computed(() => {
-  if (!sortBy.value) 
-  return props.entries;
+  if (!sortBy.value) return props.entries;
   
   return [...props.entries].sort((a, b) => {
     const getValue = (item, field) => {
@@ -163,7 +162,7 @@ async function saveRating(entry) {
   }
 
   .bg-title {
-    background-color: #000;
+    background-color: #1a1a1a;
     border-radius: 20px 20px 0 0 ;
   }
   
@@ -190,7 +189,7 @@ async function saveRating(entry) {
   
   .list-table thead {
     width: 100%;
-    background-color: #000;
+    background-color: #1a1a1a;
     color: #fff;
   }
 
@@ -239,7 +238,7 @@ async function saveRating(entry) {
 }
   .list-table tbody tr:hover {
     border-radius: 5px;
-    outline: 2px solid #000;
+    outline: 2px solid #1a1a1a;
     outline-offset: -1px;
   }
 

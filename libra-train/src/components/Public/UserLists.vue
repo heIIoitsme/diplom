@@ -22,12 +22,13 @@
                 class="bar-horizontal"
               >
               <span class="bar-score">{{ i+1 }}</span>
-                <div
-                  class="bar-fill"
-                  :style="{ width: ratingPercents[i] + '%' }"
-                >
-                  <span class="bar-label">{{ ratingCounts[i] }}</span>
-                </div>
+                <div class="bar-fill" :style="{ width: ratingPercents[i] + '%' }">
+                <span 
+                  class="bar-label"
+                  v-text="ratingCounts[i]"
+                  v-measure-visibility
+                ></span>
+              </div>
               </div>
             </div>
           </div>
@@ -145,6 +146,21 @@ const favoriteGenre = computed(() => {
   const sorted = Object.entries(genreCount).sort((a, b) => b[1] - a[1])
   return sorted[0]?.[0] || '—'
 })
+
+const vMeasureVisibility = {
+  mounted(el) {
+    checkVisibility(el)
+    new ResizeObserver(() => checkVisibility(el)).observe(el.parentElement)
+  }
+}
+
+function checkVisibility(el) {
+  const parent = el.parentElement
+  const labelWidth = el.scrollWidth
+  const availableWidth = parent.offsetWidth - 16 // 8px padding с каждой стороны
+  
+  el.style.visibility = labelWidth <= availableWidth ? 'visible' : 'hidden'
+}
 </script>
   
   <style scoped>
@@ -241,7 +257,7 @@ const favoriteGenre = computed(() => {
 .bar-fill {
   position: relative;
   height: 18px;
-  background: #000;
+  background: #1a1a1a;
   border-radius: 10px;
   transition: width 0.3s;
   overflow: hidden;

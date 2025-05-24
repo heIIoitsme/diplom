@@ -46,7 +46,7 @@
     position: absolute;
     font-family: 'Kreadon';
     font-size: 24px;
-    color: #000000;
+    color: #1a1a1a;
     z-index: 2;
   }
   .image {

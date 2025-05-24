@@ -47,7 +47,7 @@
     height: 320px;
     font-family: 'Kreadon';
     font-size: 24px;
-    color: #000000;
+    color: #1a1a1a;
     z-index: 2;
     text-shadow: #fff 0px 0px 15px, #fff 0px 0px 15px, #fff 0px 0px 20px, #fff 0px 0px 20px;
   }

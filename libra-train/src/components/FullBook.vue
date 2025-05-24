@@ -1,83 +1,111 @@
 <template>
-    <div v-if="book" class='container'>
-        <div class='first_container'>
-            <img
-              class='book_img'
-              :src="require(`@/assets/covers/${book.cover}`)"
-            />
-            <div class='main_info'>
-                <a1>{{ book.title }}</a1>
-                <a2>{{ book.author[0].fullName }}</a2>
-                <div class='rating_info'>
-                    <div>
-                        <a3>Рейтинг {{ book.rating }}</a3>
-                        <div>Звездочки</div>
-                    </div>
-                    <div class="dropdown-wrapper">
-                      <button @click="toggleDropdown" class="list_button">
-                        <span class="add-list">
-                          {{ currentStatus ? capitalize(currentStatus) : '+  Добавить в список' }}
-                        </span>
-                        <span class="arrow">{{ showDropdown ? '▼' : '▶' }}</span>
-                      </button>
-                      <ul v-if="showDropdown" class="dropdown-menu">
-                        <li v-for="s in availableStatuses" :key="s"
-                            class="dropdown-item" @click="selectStatus(s)">
-                          {{ capitalize(s) }}
-                        </li>
-                        <li v-if="currentStatus" class="dropdown-item delete"
-                            @click="deleteEntry">
-                          Удалить из списка
-                        </li>
-                      </ul>
-                    </div>
-                </div>
+  <div v-if="book" class="container">
+    <div class="first_container">
+      <img
+        class="book_img"
+        :src="require(`@/assets/covers/${book.cover}`)"
+        alt="Обложка книги"
+      />
+      <div class="main_info">
+        <a1>{{ book.title }}</a1>
+        <a2>{{ book.author[0].fullName }}</a2>
+        <div class="rating_info">
+          <div>
+            <div class="rating_text">
+              <a3>Рейтинг</a3>
+              <a3>{{ book.rating }}</a3>
             </div>
-            <div class='second_container'>
-                <p>{{ book.description }}</p>
+            <div class="stars">
+              <svg 
+                v-for="n in 5"
+                :key="n"
+                class="star"
+                width="30"
+                height="30"
+                viewBox="0 0 30 30"
+              >
+                <defs>
+                  <linearGradient :id="`gradient-${n}`">
+                    <stop offset="0%" stop-color="#000"/>
+                    <stop :offset="getFillPercent(n)" stop-color="#000"/>
+                    <stop :offset="getFillPercent(n)" stop-color="transparent"/>
+                    <stop offset="100%" stop-color="transparent"/>
+                  </linearGradient>
+                </defs>
+                <path 
+                  d="M13.5361 1.49023C13.6939 1.099 14.2236 1.07454 14.4277 1.41699L14.4639 1.49023L17.5225 9.08691C17.7068 9.54462 18.102 9.8786 18.5742 9.98828L18.7803 10.0205L26.6904 10.7275C27.0964 10.7641 27.2804 11.2366 27.0371 11.5371L26.9824 11.5947L20.9004 17.1406C20.5533 17.4573 20.3777 17.9153 20.417 18.376L20.4473 18.5732L22.2607 26.7559C22.3507 27.1632 21.9368 27.4828 21.5752 27.3242L21.5039 27.2861L14.8047 23.0293C14.3444 22.7369 13.7643 22.7187 13.2891 22.9746L13.1953 23.0293L6.49609 27.2861C6.14391 27.5099 5.70307 27.2298 5.72852 26.8359L5.73926 26.7559L7.55273 18.5732C7.65441 18.1143 7.53483 17.6384 7.2373 17.2842L7.09961 17.1406L1.01758 11.5947C0.716252 11.3199 0.855911 10.8322 1.23145 10.7402L1.30957 10.7275L9.21973 10.0205C9.71086 9.97657 10.144 9.69527 10.3857 9.27539L10.4775 9.08691L13.5361 1.49023Z"
+                  :fill="`url(#gradient-${n})`"
+                  stroke="#2D2D2D"
+                  stroke-linejoin="round"
+                />
+              </svg>
             </div>
+          </div>
+          <div class="status-buttons">
+            <button
+              v-for="s in statuses"
+              :key="s"
+              @click="s === currentStatus ? deleteEntry() : selectStatus(s)"
+              @mouseenter="hoverStatus = s"
+              @mouseleave="hoverStatus = null"
+              :class="{ active: s === currentStatus }"
+            >
+              <!-- Если это текущий статус и на него наводят, показываем "Удалить..." -->
+              {{ (s === currentStatus && hoverStatus === s)
+                  ? 'Удалить'
+                  : capitalize(s) }}
+            </button>
+          </div>
         </div>
+      </div>
+      <div class="second_container">
+        <p>{{ book.description }}</p>
+      </div>
     </div>
-    <div v-else-if="error">{{ error }}</div>
-    <div v-else>Загрузка...</div>
+  </div>
+  <div v-else-if="error">{{ error }}</div>
+  <div v-else>Загрузка...</div>
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import axios from 'axios'
 import { useNotification } from '@kyvg/vue3-notification'
 
 const { notify } = useNotification()
-
 const route = useRoute()
+
 const book = ref(null)
 const error = ref('')
-const showDropdown  = ref(false)
 const currentStatus = ref(null)
-const statuses      = [
+// для отслеживания наведения
+const hoverStatus = ref(null)
+
+const statuses = [
   'прочитано',
   'запланировано',
   'брошено',
   'читаю',
   'отложено'
 ]
-  const availableStatuses = computed(() => 
-  statuses.filter(s => s !== currentStatus.value))
 
-// Получаем id из маршрута и загружаем одну книгу
 onMounted(async () => {
   const id = route.params.id
+
+  // Загрузка книги
   try {
-    const res = await axios.get(`${process.env.VUE_APP_API_URL}/api/books/${id}`)
+    const res = await axios.get(
+      `${process.env.VUE_APP_API_URL}/api/books/${id}`
+    )
     book.value = res.data
-    console.log(res)
-  } catch (err) {
-    console.error('Ошибка загрузки книги:', err)
+  } catch (e) {
+    console.error('Ошибка загрузки книги:', e)
     error.value = 'Ошибка при загрузке книги'
+    return
   }
 
-
+  // Загрузка текущего статуса
   const token = localStorage.getItem('token')
   if (!token) return
 
@@ -86,7 +114,6 @@ onMounted(async () => {
       `${process.env.VUE_APP_API_URL}/api/user-books/book/${id}`,
       { headers: { Authorization: `Bearer ${token}` } }
     )
-    console.log('>>> GET /api/user-books response.data:', resStatus.data)
     currentStatus.value = resStatus.data?.status || null
   } catch (e) {
     console.error('Ошибка получения статуса книги:', e)
@@ -97,22 +124,19 @@ function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
-function toggleDropdown() {
-  showDropdown.value = !showDropdown.value
-}
-
 async function selectStatus(status) {
+  const token = localStorage.getItem('token')
+  if (!token) {
+    notify({
+      title: 'Внимание!',
+      text: 'Войдите или зарегистрируйтесь',
+      type: 'warn',
+      duration: 2000
+    })
+    return
+  }
+
   try {
-    const token = localStorage.getItem('token')
-    if (!token) {
-      notify({
-        title: 'Внимание!',
-        text: 'Войдите или зарегистрируйтесь',
-        type: 'warning',
-        duration: 2000
-      })
-      return
-    }
     const bookId = route.params.id
     await axios.post(
       `${process.env.VUE_APP_API_URL}/api/user-books`,
@@ -120,28 +144,32 @@ async function selectStatus(status) {
       { headers: { Authorization: `Bearer ${token}` } }
     )
     currentStatus.value = status
-    showDropdown.value = false
   } catch (e) {
     console.error('Ошибка добавления в список:', e)
   }
 }
+
 async function deleteEntry() {
+  const token = localStorage.getItem('token')
+  if (!token) return
+
   try {
-    const token = localStorage.getItem('token')
-    if (!token) return
     const bookId = route.params.id
     await axios.delete(
       `${process.env.VUE_APP_API_URL}/api/user-books/${bookId}`,
       { headers: { Authorization: `Bearer ${token}` } }
     )
     currentStatus.value = null
-    showDropdown.value = false
   } catch (e) {
     console.error('Ошибка удаления из списка:', e)
   }
 }
 
-
+const getFillPercent = (position) => {
+  const rating = book.value?.rating || 0;
+  const fill = Math.min(Math.max(rating - (position - 1), 0), 1); // Ограничиваем от 0 до 1
+  return `${fill * 100}%`;
+}
 </script>
 
 <style scoped>
@@ -176,14 +204,20 @@ async function deleteEntry() {
   }
   .rating_info {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     gap: 10px;
   }
+  .rating_text {
+    display: flex;
+    width: 150px;
+    justify-content: space-between;
+  }
+
   .list_button {
     height: 25px;
     width: 170px;
     border-radius: 25px;
-    background-color: black;
+    background-color: #1a1a1a;
   }
   .list_button span {
     font-family: Kreadon;
@@ -225,7 +259,7 @@ async function deleteEntry() {
   background: #f0f0f0;
 }
 .dropdown-item.delete {
-  color: red;
+  color: #E63946;
 }
 
 .arrow {
@@ -237,6 +271,51 @@ async function deleteEntry() {
 
 .add-list {
   font-size: 14px;
+}
+
+.status-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+.status-buttons button {
+  padding: 2px 12px 0px 12px;
+  border: 1px solid #dcdcdc;
+  background: #fff;
+  cursor: pointer;
+  border-radius: 15px;
+  width: 130px;
+  height: 30px;
+  font-family: Kreadon;
+  font-size: 14px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.status-buttons button:hover {
+  border: 1px solid #c8c8c8;
+  background-color: #dcdcdc;
+}
+.status-buttons button.active {
+  background: #3A86FF;
+  color: #fff;
+  border-color: #dcdcdc;
+}
+
+.status-buttons button.active:hover {
+  background: #E63946;
+}
+
+.stars {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.star {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
 }
 
 </style>

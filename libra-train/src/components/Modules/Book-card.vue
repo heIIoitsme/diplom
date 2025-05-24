@@ -84,7 +84,7 @@ export default {
 .authorname {
   font-family: 'Kreadon';
   font-size: 14px;
-  color: #252525;
+  color: #555555;
   margin: 0px 8px;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -101,7 +101,7 @@ export default {
   cursor: default;
 }
 .statename:hover {
-  color:red
+  color:#E63946
 }
 .ratingname {
   font-family: 'Kreadon';

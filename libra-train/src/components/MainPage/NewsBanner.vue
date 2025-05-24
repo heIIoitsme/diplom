@@ -66,7 +66,7 @@
   .headline {
     font-family: 'Kreadon';
     font-size: 40px;
-    color: black;
+    color: #1a1a1a;
   }
   .fullmodule {
     display: flex;

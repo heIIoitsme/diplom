@@ -7,9 +7,7 @@
                   :src="require(`@/assets/covers/anna-karenina.jpeg`)"
                   loading="lazy" 
                 />
-                <router-link :to="`/user/${user.username}`" class="router-link-custom">
-                    <h1 class="nickname">{{ user.username }}</h1>
-                </router-link>
+                <h1 class="nickname">{{ user.username }}</h1>
             </div>
             <div class="profile_other">
                 <div class="profile_second">
