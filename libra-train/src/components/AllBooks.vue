@@ -1,6 +1,6 @@
 <template>
   <div class="allPage" ref="scrollContainer">
-    <a1 class="page-title">Все книги</a1>
+    <h1 class="page-title">Все книги</h1>
     <div class="mainInfo">
       <div class="allBooks">
         <div v-if="displayedBooks.length" class="books-grid">

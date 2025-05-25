@@ -1,6 +1,6 @@
 <template>
     <div class="fullmodule">
-      <router-link :to="`/news/$`" class="router-link-custom"><span class="headline"> Статьи и новости </span></router-link>
+      <router-link :to="`/news`" class="router-link-custom"><span class="headline"> Статьи и новости </span></router-link>
         <div class ='news-container'>
             <div v-if="newses.length" class="news-big-grid">
             <NewsBigCard 

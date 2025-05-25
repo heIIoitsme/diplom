@@ -11,6 +11,7 @@ import Lists from '@/components/Private/Lists.vue';
 import UserLists from '@/components/Public/UserLists.vue';
 import AllBooks from '@/components/AllBooks.vue';
 import AllCategoryBooks from '@/components/AllCategoryBooks.vue';
+import AllNews from '@/components/AllNews.vue';
 
 const routes = [
   {
@@ -79,6 +80,13 @@ const routes = [
     path: '/category/:slug',
     name: 'AllCategoryBooks',
     component: AllCategoryBooks,
+    props: true,
+    meta: { title: 'Книга'}
+  },
+    {
+    path: '/news',
+    name: 'AllNews',
+    component: AllNews,
     props: true,
     meta: { title: 'Книга'}
   },
