@@ -4,7 +4,7 @@ const { resolve } = require('path')
 const fetch = require('node-fetch') // или другую библиотеку для HTTP
 
 async function build() {
-  const hostname = 'https://your-domain.com'
+  const hostname = 'https://diplom-phi-eight.vercel.app'
   const sitemapPath = resolve(__dirname, '../public/sitemap.xml')
   const stream = new SitemapStream({ hostname })
   const writeStream = createWriteStream(sitemapPath)
