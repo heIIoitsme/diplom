@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Карта сайта | LibraTrain</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    h1 {
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 10px;
+    }
+    ul {
+      line-height: 1.8;
+    }
+    a {
+      text-decoration: none;
+      color: #007acc;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <h1>Карта сайта</h1>
+
+  <h2>Основные страницы</h2>
+  <ul>
+    <li><a href="/">Главная</a></li>
+    <li><a href="/books">Все книги</a></li>
+    <li><a href="/news">Новости</a></li>
+    <li><a href="/profile">Мой профиль</a></li>
+  </ul>
+
+  <h2>Книги</h2>
+  <ul id="books-list">
+    <!-- JS подставит сюда ссылки на книги -->
+  </ul>
+
+  <script>
+    // Подгружаем список книг из API и вставляем в список
+    fetch('/api/books')
+      .then(res => res.json())
+      .then(data => {
+        const list = document.getElementById('books-list')
+        data.forEach(book => {
+          const li = document.createElement('li')
+          const a = document.createElement('a')
+          a.href = `/book/${book._id}`
+          a.textContent = book.title
+          li.appendChild(a)
+          list.appendChild(li)
+        })
+      })
+      .catch(err => {
+        const list = document.getElementById('books-list')
+        const li = document.createElement('li')
+        li.textContent = 'Не удалось загрузить список книг.'
+        list.appendChild(li)
+        console.error(err)
+      })
+  </script>
+</body>
+</html>
