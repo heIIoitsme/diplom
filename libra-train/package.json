@@ -5,7 +5,9 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "generate-sitemap": "node sitemap.js",
+    "build": "npm run sitemap && vue-cli-service build"
   },
   "dependencies": {
     "@kyvg/vue3-notification": "^3.4.1",
@@ -33,6 +35,7 @@
     "@vue/cli-service": "^5.0.8",
     "eslint": "^7.32.0",
     "eslint-plugin-vue": "^9.33.0",
+    "sitemap": "^8.0.0",
     "tailwindcss": "^4.0.13"
   },
   "eslintConfig": {
