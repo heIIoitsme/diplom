@@ -17,7 +17,7 @@ async function build() {
 
   // 3. Динамические страницы книг
   // Предположим, у вас есть API вида GET /api/books, который возвращает список книг
-  const books = await fetch(`${hostname}/api/books`)
+  const books = await fetch(`${hostname}/api/books?limit=1000`)
     .then(res => res.json())
 
   for (const book of books) {
