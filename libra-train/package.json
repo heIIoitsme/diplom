@@ -4,10 +4,9 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "generate-sitemap": "node sitemap.js",
-    "build": "npm run sitemap && vue-cli-service build"
+    "build": "npm run generate-sitemap && vue-cli-service build"
   },
   "dependencies": {
     "@kyvg/vue3-notification": "^3.4.1",
