@@ -1,6 +1,6 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import axios from 'axios'          // ← добавляем
+import axios from 'axios'          
 
 export function useProfile() {
   const user = ref(null)
@@ -25,7 +25,6 @@ export function useProfile() {
 
       user.value = await res.json()
 
-      // ← После успешного получения профиля ставим токен в axios по умолчанию:
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
     } catch (e) {
       error.value = 'Не удалось загрузить профиль'
