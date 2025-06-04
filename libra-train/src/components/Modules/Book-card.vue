@@ -30,7 +30,7 @@ export default {
   },
   computed: {
     formattedRating() {
-      return this.book.rating?.toFixed(1).replace('.', ',') || '0,0'
+      return this.book.rating?.toFixed(1).replace('.', ',') || '—'
     }
   }
 }

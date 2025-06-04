@@ -13,7 +13,7 @@
           <div>
             <div class="rating_text">
               <a3>Рейтинг</a3>
-              <a3>{{ book.rating }}</a3>
+              <a3>{{ book.rating != null ? book.rating.toFixed(1).replace('.', ',') : '—' }}</a3>
             </div>
             <div class="stars">
               <svg 
@@ -99,6 +99,8 @@ onMounted(async () => {
       `${process.env.VUE_APP_API_URL}/api/books/${id}`
     )
     book.value = res.data
+
+    document.title = book.value.title
   } catch (e) {
     console.error('Ошибка загрузки книги:', e)
     error.value = 'Ошибка при загрузке книги'

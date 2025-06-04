@@ -250,7 +250,6 @@ app.delete('/api/user-books/:bookId', authenticateToken, async (req, res) => {
 
 app.get('/api/user-books/all', authenticateToken, async (req, res) => {
   try {
-    // разрешаем только admin
     if (req.user.role !== 'admin') {
       return res.status(403).json({ error: 'Доступ запрещён' });
     }

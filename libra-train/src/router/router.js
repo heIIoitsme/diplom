@@ -74,21 +74,21 @@ const routes = [
     name: 'AllBooks',
     component: AllBooks,
     props: true,
-    meta: { title: 'Книга'}
+    meta: { title: 'Все книги'}
   },
   {
     path: '/category/:slug',
     name: 'AllCategoryBooks',
     component: AllCategoryBooks,
     props: true,
-    meta: { title: 'Книга'}
+    meta: { title: 'Категория'}
   },
     {
     path: '/news',
     name: 'AllNews',
     component: AllNews,
     props: true,
-    meta: { title: 'Книга'}
+    meta: { title: 'Новость'}
   },
 ];
 

@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 
 export function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1]; // "Bearer TOKEN"
+  const token = authHeader && authHeader.split(' ')[1];
 
   if (!token) {
     return res.status(401).json({ error: 'Требуется авторизация' });
@@ -13,7 +13,7 @@ export function authenticateToken(req, res, next) {
       return res.status(403).json({ error: 'Недействительный токен' });
     }
 
-    req.user = user; // userId, role и прочее
+    req.user = user;
     next();
   });
 }

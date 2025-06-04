@@ -14,7 +14,6 @@
       </div>
     </div>
 
-    <!-- Логин -->
     <div class="form-group">
       <input
         type="text"
@@ -28,7 +27,6 @@
       </div>
     </div>
 
-    <!-- Пароль -->
     <div class="form-group">
       <div class="password-container">
         <input

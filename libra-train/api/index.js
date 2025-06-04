@@ -175,7 +175,6 @@ app.get('/api/users', async (req, res) => {
   res.status(200).json(users);
 });
 
-// --- Защищённые маршруты
 app.get('/api/secret', authenticateToken, (req, res) => {
   res.json({ message: `Привет, пользователь ${req.user.userId}` });
 });

@@ -12,7 +12,25 @@
             </div>
             <div class="profile_other">
                 <div class="profile_second">
-                    <div class="profile_last"></div>
+                    <div class="profile_last" v-if="stats.lastReadBook">
+                      <span>Последнее прочитанное</span>
+                      <div class="book-card">
+                        <img
+                          class="book-img"
+                          :src="require(`@/assets/covers/${stats.lastReadBook.cover}`)"
+                          alt="Обложка книги"
+                        />
+                        <div class="book-info">
+                          <div>
+                            <div class="book-title">{{ stats.lastReadBook.title }}</div>
+                            <div class="book-author">{{ stats.lastReadBook.author[0]?.fullName }}</div>
+                          </div>
+                          <div class="user-rating">
+                            Оценка пользователя: {{ stats.lastReadBook.userRating !== null ? stats.lastReadBook.userRating : '—' }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                     <div class="profile_stata">
                         <router-link :to="`/profile/lists`" class="router-link-custom"><span>Список книг</span></router-link>
                     </div>
@@ -38,6 +56,7 @@
 import { reactive, onMounted } from 'vue'
 import axios from 'axios'
 import { useProfile } from './useProfile.js'
+import { getLastReadBook } from './LastBook.js'
 
 const { user } = useProfile()
 
@@ -101,6 +120,12 @@ onMounted(async () => {
     }))
     const topRated = avgRating.sort((a, b) => b.avg - a.avg)[0]
     stats.topRatedBookTitle = books.find(b => b._id === topRated?.id)?.title || ''
+
+    const lastBook = getLastReadBook(userBooks, books)
+      if (lastBook) {
+        stats.lastReadBook = lastBook
+      }
+
   } catch (e) {
     console.error('Ошибка загрузки статистики:', e)
   }
@@ -151,6 +176,12 @@ onMounted(async () => {
       width: 480px;
       background-color: #ffffff;
       border-radius: 20px;
+  }
+
+  .profile_last span {
+    display: block;
+    font-size: 32px;
+    margin: 20px;
   }
   
   .profile_stata {
@@ -203,66 +234,40 @@ onMounted(async () => {
     display: inline-block;
     color: inherit;
   }
-  
-  @media (max-width: 1500px) {
-  .profile_full {
-      transform: scale(0.9);
-      transform-origin: center;
-  }
-  }
-  
-  @media (max-width: 1300px) {
-  .profile_second {
-      grid-template-columns: 1fr 1fr;
-  }
-  
-  .profile_last,
-  .profile_stata {
-      width: 100% !important;
-      max-width: none;
-  }
-  }
-  
-  @media (max-width: 1024px) {
-  .profile_full {
-      flex-direction: column;
-      width: 95%;
-      height: auto;
-      gap: 30px;
-  }
-  
-  .profile_main {
-      width: 100%;
-      height: 300px;
-      display: flex;
-      flex-direction: row;
-  }
-  
-  .image {
-      padding: 25px;
-  }
-  
-  .profile_second {
-      grid-template-columns: 1fr;
-      height: auto;
-      gap: 20px;
-  }
-  
-  .profile_last,
-  .profile_stata {
-      height: 250px;
-  }
-  }
-  
-  @media (max-width: 768px) {
-  .profile_last,
-  .profile_stata {
-      height: 200px;
-  }
-  
-  .profile_time,
-  .profile_end {
-      height: 120px;
-  }
-  }
+
+  .book-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border-radius: 8px;
+  margin: 0px 20px 20px;
+}
+
+.book-img {
+  width: 135px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.book-info {
+  height: 180px;
+  width: 290px;
+  display: flex;
+  flex-direction: column;
+  justify-content:space-between;
+}
+
+.book-title {
+  font-size: 30px;
+}
+
+.book-author {
+  color: #666;
+  font-size: 26px;
+}
+
+.user-rating {
+  font-size: 22px;
+}
   </style>

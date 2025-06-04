@@ -14,7 +14,7 @@ export async function recalcBookRating(bookId) {
 
   // 2) Округляем до десятых (или сбрасываем в null, если оценок нет)
   const newRating = avgRating !== null
-    ? parseFloat(avgRating.toFixed(1))
+    ? parseFloat(avgRating.toFixed(2))
     : null;
 
   // 3) Обновляем одну книгу в коллекции book
