@@ -1,5 +1,12 @@
 <template>
   <div v-if="book" class="container">
+    <div class="breadcrumbs">
+      <router-link to="/">Главная</router-link>
+      <span> / </span>
+      <router-link :to="{ name: 'AllBooks' }">Все книги</router-link>
+      <span> / </span>
+      <span>{{ book.title }}</span>
+    </div>
     <div class="first_container">
       <img
         class="book_img"
@@ -7,8 +14,10 @@
         alt="Обложка книги"
       />
       <div class="main_info">
-        <a1>{{ book.title }}</a1>
-        <a2>{{ book.author[0].fullName }}</a2>
+        <div style="display: flex; flex-direction: column;">
+          <a1>{{ book.title }}</a1>
+          <a2>{{ book.author[0].fullName }}</a2>
+        </div>
         <div class="rating_info">
           <div>
             <div class="rating_text">
@@ -59,7 +68,10 @@
         </div>
       </div>
       <div class="second_container">
-        <p>{{ book.description }}</p>
+        <a2>О книге</a2>
+        <div class="content">
+          <p class="description">{{ book.description }}</p>
+        </div>
       </div>
     </div>
   </div>
@@ -175,6 +187,21 @@ const getFillPercent = (position) => {
 </script>
 
 <style scoped>
+
+.breadcrumbs {
+  margin: 10px 0;
+  font-size: 14px;
+  color: #666;
+}
+
+.breadcrumbs a {
+  color: #337ab7;
+  text-decoration: none;
+}
+
+.breadcrumbs a:hover {
+  text-decoration: underline;
+}
   .container {
     display: flex;
     flex-direction: column;
@@ -185,20 +212,47 @@ const getFillPercent = (position) => {
   .first_container{
     display: flex;
     flex-direction: row;
-    height: 260px;
     width: 1400px;
     border-radius: 20px;
     background-color: #fff;
+}
+
+  .second_container {
+    height: 310px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+  .second_container .content {
+  max-height: 240px; /* или 100% - высота заголовка - отступы */
+  overflow-y: auto;
+  padding-right: 5px;
+}
+  
+  .second_container a2 {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 32px;
   }
+  .second_container .description {
+    overflow-y: auto;
+    padding-right: 5px;
+    font-size: 20px;
+    white-space: pre-line;
+  }
+
   .main_info {
+    width: 690px;
     display: flex;
     flex-direction: column;
     padding: 20px;
+    justify-content: space-between;
   }
   .main_info a1 {
     font-size: 48px;
   }
   .main_info a2 {
+    color: #555555;
     font-size: 32px;
   }
   .main_info a3 {
@@ -226,8 +280,7 @@ const getFillPercent = (position) => {
     color: #fff;
   }
   .book_img {
-    height: 220px;
-    width: 150px;
+    height: 310px;
     padding: 20px;
     border-radius: 30px;
     object-fit: cover;

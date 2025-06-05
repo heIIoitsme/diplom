@@ -2,34 +2,39 @@
     <div v-if="user" class="container">
         <div class="profile_full">
             <div class="profile_main">
-                <img 
-                  class="image" 
-                  :src="require(`@/assets/covers/anna-karenina.jpeg`)"
-                  loading="lazy" 
-                />
-                <!-- Динамическое имя пользователя -->
-                <h1 class="nickname">{{ user.username }}</h1>
+              <div class="avatar" :style="{ backgroundColor: avatarColor }">
+                {{ user.username?.charAt(0).toUpperCase() }}
+              </div>
+              <h1 class="nickname">{{ user.username }}</h1>
             </div>
             <div class="profile_other">
                 <div class="profile_second">
-                    <div class="profile_last" v-if="stats.lastReadBook">
+                    <div class="profile_last" v-if="statsUser.lastReadBook">
                       <span>Последнее прочитанное</span>
-                      <div class="book-card">
+                        <router-link :to="`/book/${statsUser.lastReadBook._id}`" class="router-link-custom"><div class="book-card">
                         <img
                           class="book-img"
-                          :src="require(`@/assets/covers/${stats.lastReadBook.cover}`)"
+                          :src="require(`@/assets/covers/${statsUser.lastReadBook.cover}`)"
                           alt="Обложка книги"
                         />
                         <div class="book-info">
                           <div>
-                            <div class="book-title">{{ stats.lastReadBook.title }}</div>
-                            <div class="book-author">{{ stats.lastReadBook.author[0]?.fullName }}</div>
+                            <div class="book-title">{{ statsUser.lastReadBook.title }}</div>
+                            <div class="book-author">
+                              {{ statsUser.lastReadBook.author[0]?.fullName }}
+                            </div>
                           </div>
                           <div class="user-rating">
-                            Оценка пользователя: {{ stats.lastReadBook.userRating !== null ? stats.lastReadBook.userRating : '—' }}
+                            Оценка пользователя:
+                            {{ statsUser.lastReadBook.userRating !== null
+                              ? statsUser.lastReadBook.userRating
+                              : '—' }}
                           </div>
                         </div>
-                      </div>
+                      </div></router-link>
+                    </div>
+                    <div v-else>
+                    Этот пользователь еще не прочитал ни одной книги
                     </div>
                     <div class="profile_stata">
                         <router-link :to="`/profile/lists`" class="router-link-custom"><span>Список книг</span></router-link>
@@ -39,11 +44,11 @@
                 <div class="profile_end">
                     <div class="admin_statistic" v-if="user?.role === 'admin'">
                         <a>Статистика сайта</a>
-                        <h2>Всего книг в системе: {{ stats.totalBooks }}</h2>
-                        <h2>Всего книг прочитано: {{ stats.totalRead }}</h2>
-                        <h2>Самый популярный жанр: {{ stats.topGenre || '—' }}</h2>
-                        <h2>Самая популярная книга: {{ stats.topBookTitle || '—' }}</h2>
-                        <h2>Самая высокооцененная книга: {{ stats.topRatedBookTitle || '—' }}</h2>
+                        <h2>Всего книг в системе: {{ statsGeneral.totalBooks }}</h2>
+                        <h2>Всего книг прочитано: {{ statsGeneral.totalRead }}</h2>
+                        <h2>Самый популярный жанр: {{ statsGeneral.topGenre || '—' }}</h2>
+                        <h2>Самая популярная книга: {{ statsGeneral.topBookTitle || '—' }}</h2>
+                        <h2>Самая высокооцененная книга: {{ statsGeneral.topRatedBookTitle || '—' }}</h2>
                     </div>
                 </div>
             </div>
@@ -53,14 +58,15 @@
   </template>
   
 <script setup>
-import { reactive, onMounted } from 'vue'
+import { reactive, onMounted, computed, watch } from 'vue'
 import axios from 'axios'
 import { useProfile } from './useProfile.js'
 import { getLastReadBook } from './LastBook.js'
 
 const { user } = useProfile()
 
-const stats = reactive({
+// Общая статистика по всем книгам и всем user-books
+const statsGeneral = reactive({
   totalBooks: 0,
   totalRead: 0,
   topGenre: '',
@@ -68,68 +74,92 @@ const stats = reactive({
   topRatedBookTitle: ''
 })
 
+// Статистика по конкретному пользователю
+const statsUser = reactive({
+  lastReadBook: null
+})
+
+// ⛳️ ВАЖНО: следим за user отдельно, вне onMounted
+watch(user, async (newUser) => {
+  if (newUser && newUser._id) {
+    try {
+      const { data: userBooks } = await axios.get(`${process.env.VUE_APP_API_URL}/api/user-books/user/${newUser._id}`)
+      const { data: books } = await axios.get(`${process.env.VUE_APP_API_URL}/api/books`)
+      const lastBook = getLastReadBook(userBooks, books)
+      statsUser.lastReadBook = lastBook || null
+    } catch (e) {
+      console.error('Ошибка загрузки пользовательской статистики:', e)
+    }
+  }
+}, { immediate: true })
+
+// Загружаем общую статистику один раз при монтировании
 onMounted(async () => {
   try {
-    // 1) Берём все книги
+    // 1) Все книги
     const { data: books } = await axios.get(`${process.env.VUE_APP_API_URL}/api/books`)
-    stats.totalBooks = books.length
+    statsGeneral.totalBooks = books.length
 
-    // 2) Берём все пользовательские книжки
-    const { data: userBooks } = await axios.get(`${process.env.VUE_APP_API_URL}/api/user-books/all`)
-    // в userBooks ожидаем массив { bookId: {...}, status, rating }
+    // 2) Все user-books
+    const { data: allUserBooks } = await axios.get(`${process.env.VUE_APP_API_URL}/api/user-books/all`)
 
-    // 3) Считаем, сколько прочитано
-    stats.totalRead = userBooks.filter(ub => ub.status === 'прочитано' || ub.status === 'Прочитано').length
+    // 3) Прочитанные
+    statsGeneral.totalRead = allUserBooks.filter(ub => ub.status?.toLowerCase() === 'прочитано').length
 
-    // 4) Самый популярный жанр: считаем по userBooks
+    // 4) Популярный жанр
     const genreCount = {}
-    for (const ub of userBooks) {
+    for (const ub of allUserBooks) {
       const book = books.find(b => b._id === ub.bookId) || (ub.book && ub.book[0])
       const genres = book?.genre || []
       genres.forEach(g => {
         genreCount[g] = (genreCount[g] || 0) + 1
       })
     }
-    stats.topGenre = Object.entries(genreCount)
-      .sort((a, b) => b[1] - a[1])[0]?.[0] || ''
+    statsGeneral.topGenre = Object.entries(genreCount).sort((a, b) => b[1] - a[1])[0]?.[0] || ''
 
-    // 5) Самая популярная книга: по числу записей в userBooks
+    // 5) Самая популярная книга
     const bookCount = {}
-    for (const ub of userBooks) {
+    for (const ub of allUserBooks) {
       const id = ub.bookId
       bookCount[id] = (bookCount[id] || 0) + 1
     }
-    const topBookId = Object.entries(bookCount)
-      .sort((a, b) => b[1] - a[1])[0]?.[0]
-    stats.topBookTitle = books.find(b => b._id === topBookId)?.title || ''
+    const topBookId = Object.entries(bookCount).sort((a, b) => b[1] - a[1])[0]?.[0]
+    statsGeneral.topBookTitle = books.find(b => b._id === topBookId)?.title || ''
 
-    // 6) Самая высокооцененная книга: по среднему rating из userBooks
+    // 6) Самая высокооцененная книга
     const ratingAcc = {}
     const ratingNum = {}
-    for (const ub of userBooks) {
+    for (const ub of allUserBooks) {
       if (ub.rating != null) {
         const id = ub.bookId
         ratingAcc[id] = (ratingAcc[id] || 0) + ub.rating
         ratingNum[id] = (ratingNum[id] || 0) + 1
       }
     }
-    // вычисляем среднее
     const avgRating = Object.entries(ratingAcc).map(([id, sum]) => ({
       id,
       avg: sum / ratingNum[id]
     }))
     const topRated = avgRating.sort((a, b) => b.avg - a.avg)[0]
-    stats.topRatedBookTitle = books.find(b => b._id === topRated?.id)?.title || ''
-
-    const lastBook = getLastReadBook(userBooks, books)
-      if (lastBook) {
-        stats.lastReadBook = lastBook
-      }
+    statsGeneral.topRatedBookTitle = books.find(b => b._id === topRated?.id)?.title || ''
 
   } catch (e) {
-    console.error('Ошибка загрузки статистики:', e)
+    console.error('Ошибка загрузки общей статистики:', e)
   }
 })
+
+// Цвет аватарки по нику
+const avatarColor = computed(() => user.value ? getColorFromUsername(user.value.username) : '#ccc')
+
+function getColorFromUsername(username) {
+  const colors = ['#6c5ce7', '#00b894', '#0984e3', '#fd79a8', '#e17055', '#fab1a0', '#55efc4', '#ffeaa7']
+  let hash = 0
+  for (let i = 0; i < username.length; i++) {
+    hash = username.charCodeAt(i) + ((hash << 5) - hash)
+  }
+  const index = Math.abs(hash) % colors.length
+  return colors[index]
+}
 </script>
   
   <style scoped>
@@ -154,6 +184,7 @@ onMounted(async () => {
       background-color: #ffffff;
       display: flex;
       flex-direction: column;
+      align-items: center;
       flex-shrink: 0;
       border-radius: 20px;
       gap: 10px;
@@ -217,11 +248,18 @@ onMounted(async () => {
     font-weight: normal;
 }
   
-  .image {
+  .avatar {
       height: 250px;
       width: 250px;
       border-radius: 50%;
-      padding: 55px;
+      background-color: #f0f0f0;
+      margin-top: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 96px;
+      font-weight: bold;
+      text-transform: uppercase;
   }
   
   .nickname {

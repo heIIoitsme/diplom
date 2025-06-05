@@ -1,11 +1,9 @@
 <template>
   <div class="container">
     <div class="profile_main">
-      <img
-        class="image"
-        :src="require(`@/assets/covers/anna-karenina.jpeg`)"
-        loading="lazy"
-      />
+      <div class="avatar" :style="{ backgroundColor: avatarColor }">
+        {{ user.username?.charAt(0).toUpperCase() }}
+      </div>
       <router-link :to="`/user/${user.username}`" class="router-link-custom">
         <h1 class="nickname">{{ user.username }}</h1>
       </router-link>
@@ -161,6 +159,17 @@ function checkVisibility(el) {
   
   el.style.visibility = labelWidth <= availableWidth ? 'visible' : 'hidden'
 }
+
+const avatarColor = computed(() => user.value ? getColorFromUsername(user.value.username) : '#ccc');
+function getColorFromUsername(username) {
+  const colors = ['#6c5ce7', '#00b894', '#0984e3', '#fd79a8', '#e17055', '#fab1a0', '#55efc4', '#ffeaa7'];
+  let hash = 0;
+  for (let i = 0; i < username.length; i++) {
+    hash = username.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const index = Math.abs(hash) % colors.length;
+  return colors[index];
+}
 </script>
   
   <style scoped>
@@ -192,12 +201,18 @@ function checkVisibility(el) {
     margin-bottom: 20px;
   }
   
-  .image {
-    width: 220px;
-    height: 220px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin: 30px auto 10px;
+  .avatar {
+      height: 220px;
+      width: 220px;
+      border-radius: 50%;
+      background-color: #f0f0f0;
+      margin-top: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 96px;
+      font-weight: bold;
+      text-transform: uppercase;
   }
   
   .stata_main {

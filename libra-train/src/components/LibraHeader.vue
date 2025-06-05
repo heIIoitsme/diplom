@@ -49,8 +49,8 @@
 
       <!-- Если залогинен, показываем меню профиля -->
       <div v-else class="profile-menu">
-        <button class="profile-icon" @click="toggleProfileMenu">
-          <div class="avatar-placeholder"></div>
+        <button class="profile-icon" @click="toggleProfileMenu" :style="{ backgroundColor: avatarColor }">
+          {{ username.charAt(0).toUpperCase() }}
         </button>
         <div v-if="showProfileMenu" class="profile-dropdown">
           <router-link 
@@ -126,6 +126,22 @@ export default {
         (b.author && this.formatAuthor(b.author).toLowerCase().includes(q))
       ).slice(0, 5)
     },
+    username() {
+    try {
+      return jwtDecode(this.token).username || ''
+    } catch {
+      return ''
+    }
+  },
+  avatarColor() {
+    const colors = ['#6c5ce7', '#00b894', '#0984e3', '#fd79a8', '#e17055', '#fab1a0', '#55efc4', '#ffeaa7']
+    let hash = 0
+    for (let i = 0; i < this.username.length; i++) {
+      hash = this.username.charCodeAt(i) + ((hash << 5) - hash)
+    }
+    const index = Math.abs(hash) % colors.length
+    return colors[index]
+  }
   },
   methods: {
     // Поиск
@@ -364,12 +380,14 @@ mounted() {
   height: 40px;
   border-radius: 50%;
   background: #f0f0f0;
-  border: 2px solid #ddd;
+  border: 1px solid #C8C8C8;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
+  font-size: 20px;
+  text-transform: uppercase;
 }
 
 .profile-icon:hover {
