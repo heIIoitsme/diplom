@@ -281,12 +281,39 @@ app.get('/api/reviews/:bookId', async (req, res) => {
       },
       { $unwind: '$user' },
       {
+        $lookup: {
+          from: 'user-books',
+          let: { userId: '$userId', bookId: '$bookId' },
+          pipeline: [
+            { 
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ['$userId', '$$userId'] },
+                    { $eq: ['$bookId', '$$bookId'] }
+                  ]
+                }
+              }
+            },
+            {
+              $project: { rating: 1 }
+            }
+          ],
+          as: 'userBook'
+        }
+      },
+      { 
+        $addFields: {
+          rating: { $arrayElemAt: ['$userBook.rating', 0] }
+        }
+      },
+      {
         $project: {
           _id: 1,
-          rating: 1,
-          addedAt: 1,
           text: 1,
-          username: '$user.username'
+          addedAt: 1,
+          username: '$user.username',
+          rating: 1
         }
       },
       { $sort: { addedAt: -1 } }
@@ -295,6 +322,54 @@ app.get('/api/reviews/:bookId', async (req, res) => {
     res.status(200).json(reviews);
   } catch (err) {
     console.error('Ошибка при получении отзывов:', err);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
+});
+
+app.post('/api/reviews', authenticateToken, async (req, res) => {
+  try {
+    const { bookId, text } = req.body;
+
+    // Базовая валидация
+    if (!ObjectId.isValid(bookId)) {
+      return res.status(400).json({ error: 'Некорректный ID книги' });
+    }
+    if (!text || text.trim().length < 3) {
+      return res.status(400).json({ error: 'Текст отзыва слишком короткий' });
+    }
+
+    const reviewCol = await dbService.getCollection('reviews');
+
+    // Проверка на дубликаты
+    const existingReview = await reviewCol.findOne({
+      bookId: new ObjectId(bookId),
+      userId: new ObjectId(req.user.userId)
+    });
+
+    if (existingReview) {
+      return res.status(409).json({ 
+        error: 'Вы уже оставляли отзыв на эту книгу' 
+      });
+    }
+
+    // Создаём отзыв
+    const newReview = {
+      bookId: new ObjectId(bookId),
+      userId: new ObjectId(req.user.userId),
+      text: text.trim(),
+      addedAt: new Date()
+    };
+
+    // Сохраняем
+    const result = await reviewCol.insertOne(newReview);
+    
+    res.status(201).json({
+      _id: result.insertedId,
+      ...newReview
+    });
+
+  } catch (err) {
+    console.error('Ошибка при добавлении отзыва:', err);
     res.status(500).json({ error: 'Ошибка сервера' });
   }
 });

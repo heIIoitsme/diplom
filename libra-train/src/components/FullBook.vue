@@ -79,11 +79,32 @@
       <div class="all_reviews">
         <div class="reviews_content">
           <span>Все отзывы ({{ reviews.length }})</span>
-          <ReviewCard
-            v-for="review in reviews"
-            :key="review._id"
-            :review="review"
-          />
+
+          <div class="reviews-scrollable">
+            <div class="review_list">
+              <ReviewCard
+              v-for="review in reviews"
+              :key="review._id"
+              :review="review"
+            />
+            </div>
+          </div>
+
+          <div class="new_review">
+            <h4>Добавить отзыв</h4>
+            <textarea
+              v-model="newReviewText"
+              placeholder="Ваш отзыв..."
+              :disabled="isSubmitting"
+            ></textarea>
+            <button
+              @click="submitReview"
+              :disabled="!newReviewText.trim() || isSubmitting"
+              class="submit-button"
+            >
+              {{ isSubmitting ? 'Отправка...' : 'Отправить' }}
+            </button>
+          </div>
           <p v-if="reviews.length === 0">Отзывов пока нет.</p>
         </div>
       </div>
@@ -102,6 +123,10 @@ import { useRoute } from 'vue-router'
 import axios from 'axios'
 import { useNotification } from '@kyvg/vue3-notification'
 import ReviewCard from '@/components/Modules/Review-card.vue'
+
+const newReviewText = ref('');
+const isSubmitting = ref(false);
+
 const reviews = ref([])
 
 const { notify } = useNotification()
@@ -206,6 +231,88 @@ async function deleteEntry() {
     console.error('Ошибка удаления из списка:', e)
   }
 }
+
+const submitReview = async () => {
+  try {
+    isSubmitting.value = true;
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+      notify({
+        title: 'Ошибка',
+        text: 'Необходимо авторизоваться',
+        type: 'error',
+        duration: 2000
+      });
+      return;
+    }
+
+    if (!newReviewText.value.trim()) {
+      notify({
+        title: 'Ошибка',
+        text: 'Текст отзыва не может быть пустым',
+        type: 'error',
+        duration: 2000
+      });
+      return;
+    }
+
+    // Дебаг-логи перед отправкой
+    console.log('Отправка отзыва:', {
+      bookId: route.params.id,
+      text: newReviewText.value.trim(),
+      endpoint: `${process.env.VUE_APP_API_URL}/api/reviews`
+    });
+
+    await axios.post(
+      `${process.env.VUE_APP_API_URL}/api/reviews`,
+      {
+        bookId: route.params.id,
+        text: newReviewText.value.trim()
+      },
+      {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    // Обновляем список
+    const { data } = await axios.get(
+      `${process.env.VUE_APP_API_URL}/api/reviews/${route.params.id}`
+    );
+    reviews.value = data;
+    
+    notify({
+      title: 'Успех!',
+      text: 'Отзыв добавлен',
+      type: 'success',
+      duration: 2000
+    });
+    
+    newReviewText.value = '';
+
+  } catch (error) {
+    console.error('Полная ошибка:', {
+      message: error.message,
+      response: error.response?.data,
+      status: error.response?.status,
+      config: error.config
+    });
+
+    notify({
+      title: 'Ошибка',
+      text: error.response?.data?.error || 
+            error.response?.data?.message || 
+            'Не удалось отправить отзыв',
+      type: 'error',
+      duration: 3000
+    });
+  } finally {
+    isSubmitting.value = false;
+  }
+};
 
 const getFillPercent = (position) => {
   const rating = book.value?.rating || 0;
@@ -408,10 +515,17 @@ const getFillPercent = (position) => {
   gap: 40px;
   margin-top: 20px;
 }
-.all_reviews {
+
+.reviews_content {
   display: flex;
   flex-direction: column;
-  overflow-y: auto; 
+  height: 100%; /* Занимаем всю высоту */
+}
+.all_reviews {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  overflow-y: auto;
   height: 550px;
   width: 800px;
   background-color: #fff;
@@ -421,6 +535,57 @@ const getFillPercent = (position) => {
   display: block;
   font-size: 32px;
     margin: 20px;
+}
+.reviews-list {
+  flex: 1; /* Занимает все доступное пространство */
+  overflow-y: auto; /* Прокрутка при большом количестве отзывов */
+  margin-bottom: 120px; /* Место для фиксированного блока */
+}
+
+.new_review {
+  position: sticky; /* Фиксируем внизу */
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  padding: 15px;
+  border-top: 1px solid #eee;
+  z-index: 100; /* Поверх других элементов */
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.1); /* Визуальное отделение */
+}
+.new_review textarea {
+  border-radius: 10px;
+  font-size: 16px;
+  padding-left: 10px;
+  padding-top: 5px;
+  height: 100px;
+  margin-bottom: 10px;
+  resize: none;
+  font-family: Kreadon;
+}
+.new_review h4 {
+  font-size: 20px;
+  margin-block-start: 0px;
+  margin-block-end: 15px;
+}
+.new_review button {
+  border-radius: 15px;
+  height: 30px;
+  font-family: Kreadon;
+  font-size: 14px;
+  background: #fff;
+  border: 1px solid #dcdcdc;
+}
+.new_review button:enabled:hover {
+  border: 1px solid #c8c8c8;
+  background-color: #dcdcdc;
+}
+
+
+.reviews-scrollable {
+  flex: 1; /* Занимает все доступное пространство */
+  overflow-y: auto; /* Включаем скролл только здесь */
+  margin-bottom: 10px; /* Отступ от формы */
 }
 
 .write_review {
