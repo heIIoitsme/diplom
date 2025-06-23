@@ -88,7 +88,7 @@
               :review="review"
             />
             </div>
-            <p v-if="reviews.length === 0">Отзывов пока нет.</p>
+            <p v-if="reviews.length === 0">Будьте первым, кто напишет отзыв к этой книге!</p>
           </div>
 
           <div class="new_review">
@@ -586,6 +586,12 @@ const getFillPercent = (position) => {
   flex: 1; /* Занимает все доступное пространство */
   overflow-y: auto; /* Включаем скролл только здесь */
   margin-bottom: 10px; /* Отступ от формы */
+}
+.reviews-scrollable p {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-style: italic;
 }
 
 .write_review {

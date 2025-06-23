@@ -9,9 +9,11 @@
             </div>
             <div class="profile_other">
                 <div class="profile_second">
-                    <div class="profile_last" v-if="statsUser.lastReadBook">
-                      <span>Последнее прочитанное</span>
-                        <router-link :to="`/book/${statsUser.lastReadBook._id}`" class="router-link-custom"><div class="book-card">
+                <div class="profile_last">
+                  <span>Последнее прочитанное</span>
+                  <template v-if="statsUser.lastReadBook">
+                    <router-link :to="`/book/${statsUser.lastReadBook._id}`" class="router-link-custom">
+                      <div class="book-card">
                         <img
                           class="book-img"
                           :src="require(`@/assets/covers/${statsUser.lastReadBook.cover}`)"
@@ -31,11 +33,11 @@
                               : '—' }}
                           </div>
                         </div>
-                      </div></router-link>
-                    </div>
-                    <div v-else>
-                    Этот пользователь еще не прочитал ни одной книги
-                    </div>
+                      </div>
+                    </router-link>
+                  </template>
+                  <p v-else>Этот пользователь еще не прочитал ни одной книги</p>
+                </div>
                     <div class="profile_stata">
                         <router-link :to="`/profile/lists`" class="router-link-custom"><span>Список книг</span></router-link>
                     </div>
@@ -208,11 +210,16 @@ function getColorFromUsername(username) {
       background-color: #ffffff;
       border-radius: 20px;
   }
-
   .profile_last span {
     display: block;
     font-size: 32px;
     margin: 20px;
+  }
+  .profile_last p {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-style: italic;
   }
   
   .profile_stata {
