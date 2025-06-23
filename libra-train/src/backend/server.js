@@ -262,6 +262,41 @@ app.get('/api/user-books/all', authenticateToken, async (req, res) => {
   }
 });
 
+app.get('/api/reviews/:bookId', async (req, res) => {
+  try {
+    const bookId = new ObjectId(req.params.bookId);
+    const reviewCol = await dbService.getCollection('reviews');
+
+    const reviews = await reviewCol.aggregate([
+      { $match: { bookId } },
+      {
+        $lookup: {
+          from: 'user',
+          localField: 'userId',
+          foreignField: '_id',
+          as: 'user'
+        }
+      },
+      { $unwind: '$user' },
+      {
+        $project: {
+          _id: 1,
+          rating: 1,
+          addedAt: 1,
+          text: 1,
+          username: '$user.username'
+        }
+      },
+      { $sort: { addedAt: -1 } }
+    ]).toArray();
+
+    res.status(200).json(reviews);
+  } catch (err) {
+    console.error('Ошибка при получении отзывов:', err);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
+});
+
 // --- Запуск сервера
 app.listen(port, () => {
   console.log(`Сервер запущен на http://localhost:${port}`);

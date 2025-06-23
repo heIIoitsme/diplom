@@ -40,13 +40,12 @@ class DatabaseService {
       projection = {},
       sort = {},
       limit = 0,
-      populate = [] // массив полей для "популяции"
+      populate = []
     } = options;
   
     try {
       const collection = await this.getCollection(collectionName);
   
-      // Если есть populate — используем aggregate
       if (populate.length > 0) {
         const pipeline = [
           { $match: query },
@@ -58,7 +57,7 @@ class DatabaseService {
               as: field.as
             }
           })),
-          ...(Object.keys(sort).length > 0 ? [{ $sort: sort }] : []), // ← исправление
+          ...(Object.keys(sort).length > 0 ? [{ $sort: sort }] : []),
           ...(limit > 0 ? [{ $limit: limit }] : []),
           ...(Object.keys(projection).length > 0 ? [{ $project: projection }] : [])
         ];
@@ -67,7 +66,6 @@ class DatabaseService {
         return result;
       }
   
-      // Если populate не указан — обычный find
       return await collection.find(query)
         .project(projection)
         .sort(sort)
@@ -146,7 +144,7 @@ class DatabaseService {
               as: field.as
             }
           })),
-          ...(Object.keys(sort).length ? [{ $sort: sort }] : []),        // ✅ добавлять $sort только если есть ключи
+          ...(Object.keys(sort).length ? [{ $sort: sort }] : []),
           ...(limit > 0 ? [{ $limit: limit }] : []),
           ...(Object.keys(projection).length ? [{ $project: projection }] : [])
         ];

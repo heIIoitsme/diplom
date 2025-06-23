@@ -74,6 +74,23 @@
         </div>
       </div>
     </div>
+
+    <div class="reviews_container">
+      <div class="all_reviews">
+        <div class="reviews_content">
+          <span>Все отзывы ({{ reviews.length }})</span>
+          <ReviewCard
+            v-for="review in reviews"
+            :key="review._id"
+            :review="review"
+          />
+          <p v-if="reviews.length === 0">Отзывов пока нет.</p>
+        </div>
+      </div>
+      <div class="write_review">
+        <span>Что-нибудь еще</span>
+      </div>
+    </div>
   </div>
   <div v-else-if="error">{{ error }}</div>
   <div v-else>Загрузка...</div>
@@ -84,6 +101,8 @@ import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import axios from 'axios'
 import { useNotification } from '@kyvg/vue3-notification'
+import ReviewCard from '@/components/Modules/Review-card.vue'
+const reviews = ref([])
 
 const { notify } = useNotification()
 const route = useRoute()
@@ -103,6 +122,7 @@ const statuses = [
 ]
 
 onMounted(async () => {
+  console.log('Компонент смонтирован')
   const id = route.params.id
 
   // Загрузка книги
@@ -117,6 +137,14 @@ onMounted(async () => {
     console.error('Ошибка загрузки книги:', e)
     error.value = 'Ошибка при загрузке книги'
     return
+  }
+
+  try {
+    const resReviews = await axios.get(`${process.env.VUE_APP_API_URL}/api/reviews/${id}`)
+    console.log('Полученные отзывы:', resReviews.data);
+    reviews.value = resReviews.data
+  } catch (e) {
+    console.error('Ошибка загрузки отзывов:', e)
   }
 
   // Загрузка текущего статуса
@@ -212,7 +240,7 @@ const getFillPercent = (position) => {
   .first_container{
     display: flex;
     flex-direction: row;
-    width: 1400px;
+    max-width: 1400px;
     border-radius: 20px;
     background-color: #fff;
 }
@@ -371,6 +399,41 @@ const getFillPercent = (position) => {
   width: 30px;
   height: 30px;
   flex-shrink: 0;
+}
+
+.reviews_container {
+  display: flex;
+  max-width: 1400px;
+  flex-direction: row;
+  gap: 40px;
+  margin-top: 20px;
+}
+.all_reviews {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto; 
+  height: 550px;
+  width: 800px;
+  background-color: #fff;
+  border-radius: 20px;
+}
+.all_reviews span {
+  display: block;
+  font-size: 32px;
+    margin: 20px;
+}
+
+.write_review {
+  display: flex;
+  height: 550px;
+  width: 550px;
+  background-color: #fff;
+  border-radius: 20px;
+}
+.write_review span {
+  display: block;
+  font-size: 32px;
+  margin: 20px;
 }
 
 </style>

@@ -14,11 +14,11 @@ const port = 3000;
 
 app.use('/', express.static('public'))
 
-// --- Middleware
+
 app.use(cors());
 app.use(express.json());
 
-// --- Подключение к MongoDB
+
 dbService.connect()
   .then(() => console.log('✅ MongoDB подключен'))
   .catch(err => {
@@ -30,7 +30,7 @@ app.get('/api/', (req, res) => {
   res.send('Hello from Express!');
 });
 
-// --- Регистрация пользователя
+
 app.post('/api/register', async (req, res) => {
   try {
     const { email, username, password } = req.body;
@@ -64,7 +64,7 @@ app.post('/api/register', async (req, res) => {
   }
 });
 
-// --- Логин и выдача JWT
+
 app.post('/api/login', async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -100,7 +100,7 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
-// --- Публичные маршруты
+
 app.get('/api/books', async (req, res) => {
   const books = await dbService.find('book', {}, {
     sort: { createdAt: -1 },
@@ -121,7 +121,7 @@ app.get('/api/books/:id', async (req, res) => {
           as: 'author' 
         }
       ]
-    }) // id как строка — всё работает
+    })
     if (!book) return res.status(404).json({ error: 'Книга не найдена' })
     res.json(book)
   } catch (err) {
@@ -171,7 +171,7 @@ app.get('/api/news', async (req, res) => {
 });
 
 app.get('/api/users', async (req, res) => {
-  const users = await dbService.find({}, 'username'); // только логины
+  const users = await dbService.find({}, 'username'); 
   res.status(200).json(users);
 });
 
@@ -199,7 +199,6 @@ app.get('/api/profile', authenticateToken, async (req, res) => {
 app.get('/api/users/:username', async (req, res) => {
   try {
     const col  = await dbService.getCollection('user');
-    // Ищем пользователя без passwordHash
     const user = await col.findOne(
       { username: req.params.username },
       { projection: { passwordHash: 0 } }
@@ -207,7 +206,6 @@ app.get('/api/users/:username', async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: 'Пользователь не найден' });
     }
-    // Возвращаем все поля кроме passwordHash
     res.status(200).json(user);
   } catch (err) {
     console.error('Ошибка при получении пользователя:', err);
@@ -254,7 +252,6 @@ app.delete('/api/user-books/:bookId', authenticateToken, async (req, res) => {
 
 app.get('/api/user-books/all', authenticateToken, async (req, res) => {
   try {
-    // разрешаем только admin
     if (req.user.role !== 'admin') {
       return res.status(403).json({ error: 'Доступ запрещён' });
     }
@@ -267,7 +264,42 @@ app.get('/api/user-books/all', authenticateToken, async (req, res) => {
   }
 });
 
-// --- Запуск сервера
+app.get('/api/reviews/:bookId', async (req, res) => {
+  try {
+    const bookId = new ObjectId(req.params.bookId);
+    const reviewCol = await dbService.getCollection('reviews');
+
+    const reviews = await reviewCol.aggregate([
+      { $match: { bookId } },
+      {
+        $lookup: {
+          from: 'user',
+          localField: 'userId',
+          foreignField: '_id',
+          as: 'user'
+        }
+      },
+      { $unwind: '$user' },
+      {
+        $project: {
+          _id: 1,
+          rating: 1,
+          addedAt: 1,
+          text: 1,
+          username: '$user.username'
+        }
+      },
+      { $sort: { addedAt: -1 } }
+    ]).toArray();
+
+    res.status(200).json(reviews);
+  } catch (err) {
+    console.error('Ошибка при получении отзывов:', err);
+    res.status(500).json({ error: 'Ошибка сервера' });
+  }
+});
+
+
 app.listen(port, () => {
   console.log(`Сервер запущен на http://localhost:${port}`);
 });
