@@ -88,6 +88,7 @@
               :review="review"
             />
             </div>
+            <p v-if="reviews.length === 0">Отзывов пока нет.</p>
           </div>
 
           <div class="new_review">
@@ -105,7 +106,6 @@
               {{ isSubmitting ? 'Отправка...' : 'Отправить' }}
             </button>
           </div>
-          <p v-if="reviews.length === 0">Отзывов пока нет.</p>
         </div>
       </div>
       <div class="write_review">
