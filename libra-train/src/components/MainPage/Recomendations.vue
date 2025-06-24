@@ -49,7 +49,7 @@ export default {
   display: flex;
   gap: 55px;
   width: 100%;
-  height: 280px;
+  max-height: 280px;
   overflow-x: hidden; /* скрыть выходящее по ширине */
   flex-wrap: nowrap;
   overflow-x: auto;

@@ -222,6 +222,7 @@ function getColorFromUsername(username) {
   font-size: 40px;
   margin-bottom: 10px;
   margin-top: 10px;
+  text-align: center;
 }
 
 .rating-block {
@@ -279,5 +280,45 @@ function getColorFromUsername(username) {
   font-weight: bold;
   text-align: center;
   margin-top: 40px;
+}
+
+@media(max-width: 1290px) {
+  .profile_main {
+    display: none;
+  }
+}
+
+@media(max-width:1024px) {
+  .stata {
+    gap:30px;
+  }
+}
+
+@media (max-width:930px) {
+  .title {
+    font-size: 25px;
+  }
+  .genre-block .value,
+  .read-block .value {
+    font-size: 20px;
+  }
+  .stata {
+    justify-content: space-evenly;
+  }
+  .rating-block {
+    max-width: 150px;
+  }
+  .genre-block {
+    max-width: 150px;
+  }
+  .read-block {
+    max-width: 150px;
+  }
+}
+
+@media (max-width: 650px) {
+  .stata {
+    display: none;
+  }
 }
 </style>

@@ -254,4 +254,50 @@ async function saveRating(entry) {
 .router-link-custom:hover{
   text-decoration: underline;
 }
+
+@media(max-width:650px) {
+  .list-table th:nth-child(4),
+  .list-table td:nth-child(4) {
+    display: none;
+}
+  .list-table th:nth-child(3),
+  .list-table td:nth-child(3) {
+   width: 15%;
+}
+  .list-table th:nth-child(5),
+  .list-table td:nth-child(5) {
+    width: 25%;
+}
+}
+
+@media(max-width:450px) {
+  .list-table th:nth-child(4),
+  .list-table td:nth-child(4) {
+    display: none;
+}
+  .list-table th:nth-child(3),
+  .list-table td:nth-child(3) {
+   width: 20%;
+}
+  .list-table th:nth-child(1),
+  .list-table td:nth-child(1) {
+    width: 10%;
+}
+  .list-table th:nth-child(5),
+  .list-table td:nth-child(5) {
+    width: 35%;
+}
+}
+
+@media(max-width:350px) {
+  .list-table th:nth-child(5),
+  .list-table td:nth-child(5) {
+    display: none;
+}
+  .list-table th:nth-child(3),
+  .list-table td:nth-child(3) {
+    border-bottom-right-radius: 10px;
+    width: 35%;
+}
+}
 </style>
