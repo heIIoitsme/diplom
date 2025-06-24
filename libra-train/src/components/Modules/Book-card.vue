@@ -88,9 +88,6 @@ export default {
   margin: 0px 8px;
 	overflow: hidden;
 	text-overflow: ellipsis;
-	display: -webkit-box;
-	-webkit-line-clamp: 4;
-	-webkit-box-orient: vertical;
 }
 .statename {
   font-family: 'Kreadon';
