@@ -272,7 +272,7 @@ mounted() {
 .search-container input {
   height: 25px;
   width: 100%;
-  padding: 5px 15px 3px 15px;
+  padding: 5px 0px 3px 0px;
   border-radius: 15px;
   font-family: 'Kreadon';
   font-size: 14px;
@@ -432,7 +432,18 @@ mounted() {
 
 @media (max-width: 1024px) {
   .logo {
-    margin-left: 10px;
+    margin-left: 15px;
+  }
+  .search-container {
+    flex: 1 1 500px;
+    max-width: 500px;
+  }
+}
+
+@media (max-width: 900px) {
+  .search-container {
+    flex: 1 1 400px;
+    max-width: 400px;
   }
 }
 
@@ -440,39 +451,55 @@ mounted() {
   .header {
     flex-wrap: wrap;
     height: auto;
-    padding: 10px;
+    padding: 10px 0;
     gap: 10px;
   }
 
   .logo {
     order: 1;
-    width: 100%;
-    text-align: center;
-    margin-left: 0;
-  }
-
-  .search-container {
-    order: 2;
-    width: 25%;
-    margin: 10px 0;
-    position: static;
-    transform: none;
+    width: auto;
+    margin-left: 15px;
+    margin-right: auto;
   }
 
   .auth-section {
+    order: 2;
+    width: auto;
+    margin-right: 15px;
+  }
+
+  .search-container {
     order: 3;
+    position: relative;
+    width: calc(100% - 30px);
+    flex: 1 1 100%;
+    max-width: 100%;
+    margin: 10px 15px;
+    left: 0;
+    transform: none;
+  }
+
+  .search-container input {
     width: 100%;
-    text-align: center;
-    margin: 10px 0;
   }
 
   .profile-menu {
     margin-right: 0;
-    display: inline-block;
   }
+}
 
+@media (max-width: 480px) {
+  .logo img {
+    width: 140px; /* Уменьшаем логотип */
+  }
+  
   .loginButton {
-    margin-right: 0;
+    width: 90px;
+    height: 26px;
+  }
+  
+  .loginButton a {
+    font-size: 16px;
   }
 }
 </style>

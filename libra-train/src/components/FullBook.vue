@@ -348,12 +348,15 @@ const getFillPercent = (position) => {
     display: flex;
     flex-direction: row;
     max-width: 1400px;
+    width: 100%;
     border-radius: 20px;
     background-color: #fff;
 }
 
   .second_container {
     height: 310px;
+    max-width: 450px;
+    width: 100%;
     padding: 20px;
     box-sizing: border-box;
 }
@@ -377,7 +380,8 @@ const getFillPercent = (position) => {
   }
 
   .main_info {
-    width: 690px;
+    max-width: 690px;
+    width: 100%;
     display: flex;
     flex-direction: column;
     padding: 20px;
@@ -511,6 +515,7 @@ const getFillPercent = (position) => {
 .reviews_container {
   display: flex;
   max-width: 1400px;
+  width: 100%;
   flex-direction: row;
   gap: 40px;
   margin-top: 20px;
@@ -527,7 +532,8 @@ const getFillPercent = (position) => {
   flex-direction: column;
   overflow-y: auto;
   height: 550px;
-  width: 800px;
+  max-width: 800px;
+  width: 100%;
   background-color: #fff;
   border-radius: 20px;
 }
@@ -597,7 +603,8 @@ const getFillPercent = (position) => {
 .write_review {
   display: flex;
   height: 550px;
-  width: 550px;
+  max-width: 550px;
+  width: 100%;
   background-color: #fff;
   border-radius: 20px;
 }
@@ -607,4 +614,140 @@ const getFillPercent = (position) => {
   margin: 20px;
 }
 
+
+@media (max-width: 1400px) {
+  .first_container {
+    flex-wrap: wrap; /* Разрешаем перенос элементов */
+  }
+  
+  .second_container {
+    max-width: 100%; /* Занимает всю ширину */
+    height: auto; /* Автоматическая высота */
+    margin-top: 20px; /* Отступ сверху */
+  }
+}
+
+@media (max-width: 1200px) {
+  .reviews_container {
+    flex-direction: column; /* Колонка вместо ряда */
+    align-items: center; /* Центрирование */
+    gap: 0px;
+  }
+  
+  .all_reviews,
+  .write_review {
+    max-width: 100%; /* На всю ширину */
+  }
+  
+  .write_review {
+    margin-top: 20px; /* Отступ сверху */
+    height: 300px; /* Уменьшаем высоту */
+  }
+}
+
+@media (max-width: 992px) {
+  .first_container {
+    align-items: center; /* Центрирование */
+    justify-content: center;
+  }
+  
+  .book_img {
+    max-width: 250px; /* Уменьшаем изображение */
+    height: auto; /* Сохраняем пропорции */
+  }
+  
+  .main_info {
+    padding: 15px 10px; /* Уменьшаем отступы */
+  }
+  
+  .main_info a1 {
+    font-size: 36px; /* Уменьшаем шрифт */
+  }
+  
+  .main_info a2 {
+    font-size: 24px; /* Уменьшаем шрифт */
+  }
+  
+  .status-buttons button {
+    width: 130px; /* Уменьшаем кнопки */
+  }
+  
+  .second_container a2 {
+    font-size: 28px; /* Уменьшаем шрифт */
+  }
+  
+  .description {
+    font-size: 18px; /* Уменьшаем шрифт */
+  }
+}
+
+@media (max-width: 768px) {
+  .main_info {
+  }
+
+  .container {
+    padding: 20px; /* Уменьшаем отступы */
+  }
+  
+  .main_info a1 {
+    font-size: 28px; /* Уменьшаем шрифт */
+  }
+  
+  .rating_text a3 {
+    font-size: 20px; /* Уменьшаем шрифт */
+  }
+  
+  .status-buttons {
+    flex-direction: column; /* Кнопки в колонку */
+  }
+  
+  .status-buttons button {
+    width: 100%; /* На всю ширину */
+  }
+  
+  .all_reviews span,
+  .write_review span {
+    font-size: 24px; /* Уменьшаем шрифт */
+  }
+  
+  .new_review h4 {
+    font-size: 18px; /* Уменьшаем шрифт */
+  }
+  
+  .breadcrumbs {
+    font-size: 12px; /* Уменьшаем шрифт */
+  }
+}
+
+@media (max-width: 480px) {
+  .book_img {
+    max-width: 200px; /* Уменьшаем изображение */
+  }
+  
+  .main_info a1 {
+    font-size: 24px; /* Уменьшаем шрифт */
+    text-align: center; /* Центрируем текст */
+  }
+  
+  .main_info a2 {
+    font-size: 18px; /* Уменьшаем шрифт */
+    text-align: center; /* Центрируем текст */
+  }
+  
+  .second_container a2 {
+    font-size: 22px; /* Уменьшаем шрифт */
+  }
+  
+  .description {
+    font-size: 16px; /* Уменьшаем шрифт */
+  }
+  
+  .all_reviews {
+    height: 500px; /* Уменьшаем высоту */
+  }
+  
+  .write_review {
+    height: 250px; /* Уменьшаем высоту */
+  }
+}
 </style>
