@@ -60,6 +60,7 @@ export default {
   height: 260px;
   border-radius: 10px;
   display: flex;
+  flex-wrap:nowrap;
   flex-direction: column;
   justify-content: space-between;
   margin-top: 5px;
@@ -88,6 +89,9 @@ export default {
   margin: 0px 8px;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: 4;
+	-webkit-box-orient: vertical;
 }
 .statename {
   font-family: 'Kreadon';

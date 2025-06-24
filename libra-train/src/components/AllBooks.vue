@@ -247,7 +247,7 @@ onBeforeUnmount(() => {
 @media (max-width: 375px) {
   .mainInfo {
     flex-direction: column;
-    align-items: stretch;
+    align-items: center;
   }
   .sortSettings {
     order: -1;
@@ -266,7 +266,7 @@ onBeforeUnmount(() => {
 @media (min-width: 376px) and (max-width: 425px) {
   .mainInfo {
     flex-direction: column;
-    align-items: stretch;
+    align-items: center;
   }
   .sortSettings {
     order: -1;
@@ -285,7 +285,7 @@ onBeforeUnmount(() => {
 @media (min-width: 426px) and (max-width: 768px) {
   .mainInfo {
     flex-direction: column;
-    align-items: stretch;
+    align-items: center;
   }
   .sortSettings {
     order: -1;
