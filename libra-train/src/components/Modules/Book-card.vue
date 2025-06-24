@@ -57,9 +57,9 @@ export default {
 }
 .text_container {
   width: 130px;
-  height: 260px;
   border-radius: 10px;
   display: flex;
+  flex-grow: 1;
   flex-wrap:nowrap;
   flex-direction: column;
   justify-content: space-between;
