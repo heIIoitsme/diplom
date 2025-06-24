@@ -74,12 +74,12 @@ app.post('/api/login', async (req, res) => {
     const userCollection = await dbService.getCollection('user');
     const user = await userCollection.findOne({ username });
     if (!user) {
-      return res.status(404).json({ error: 'Пользователь не найден' });
+      return res.status(404).json({ error: 'Неверный логин или пароль' });
     }
     const bcrypt = await import('bcryptjs');
     const isPasswordCorrect = await bcrypt.compare(password, user.passwordHash);
     if (!isPasswordCorrect) {
-      return res.status(401).json({ error: 'Неверный пароль' });
+      return res.status(401).json({ error: 'Неверный логин или пароль' });
     }
     console.log('Перед выдачей токена:', { secret: process.env.JWT_SECRET, userId: user._id });
     const token = jwt.sign(
