@@ -38,7 +38,6 @@ export default {
 
 @media (max-width: 768px) {
   .home {
-    gap: 5px;
     padding: 20px 20px;
   }
 }

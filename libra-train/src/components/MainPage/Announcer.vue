@@ -31,7 +31,8 @@ export default {
 
 @media (max-width: 992px) {
   .banner {
-    width: 95%;
+    width: 90%;
+    height: 90%;
     aspect-ratio: 3 / 1;
     border-radius: 15px;
   }
@@ -42,7 +43,6 @@ export default {
 
 @media (max-width: 768px) {
   .banner {
-    aspect-ratio: 2 / 1;
     margin: 15px auto;
     border-radius: 12px;
   }

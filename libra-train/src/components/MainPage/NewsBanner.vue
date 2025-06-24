@@ -49,7 +49,7 @@
     display: flex;
     flex-direction: row;
     max-width: 2000px;
-    height: 320px;
+    max-height: 320px;
     gap: 20px;
   }
   .news-big-grid {

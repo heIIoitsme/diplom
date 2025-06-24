@@ -63,18 +63,4 @@
     position: absolute;
     z-index: 1;
   }
-
-  @media (max-width: 768px) {
-  .card_container {
-    width: 100%;
-    max-width: 100%;
-    height: 80px;
-  }
-
-  .text_container {
-    font-size: 20px;
-    width: 200px;
-    height: 70px;
-  }
-}
   </style>

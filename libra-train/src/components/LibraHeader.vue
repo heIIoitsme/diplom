@@ -272,7 +272,7 @@ mounted() {
 .search-container input {
   height: 25px;
   width: 100%;
-  padding: 5px 0px 3px 0px;
+  padding: 5px 0px 3px 10px;
   border-radius: 15px;
   font-family: 'Kreadon';
   font-size: 14px;

@@ -1,5 +1,5 @@
 <template>
-    <router-link :to="`/news/${news.slug}`"><div class="card_container">
+    <div class="card_container">
         <img 
         class="image" 
         :src="require(`@/assets/covers/${news.cover}`)"
@@ -13,7 +13,7 @@
         <div class="text_container">
             <div class="newsname">{{ news.title }}</div>
         </div>
-    </div></router-link>
+    </div>
   </template>
   
   <script>
@@ -64,5 +64,37 @@
     height: 100%;
     position: absolute;
     z-index: 1;
+  }
+
+  @media(max-width: 850px) {
+    .card_container {
+      width: 250px;
+      height: 250px;
+    }
+    .text_container {
+      width: 210px;
+      height: 250px;
+    }
+  }
+    @media(max-width: 570px) {
+    .card_container {
+      width: 185px;
+      height: 185px;
+    }
+    .text_container {
+      width: 145px;
+      height: 185px;
+    }
+  }
+      @media(max-width: 430px) {
+    .card_container {
+      width: 170px;
+      height: 170px;
+    }
+    .text_container {
+      width: 130px;
+      height: 170px;
+      font-size: 20px;
+    }
   }
   </style>
