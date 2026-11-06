@@ -1,24 +1,14 @@
-# libra-train
+# LibraTrain
 
-## Project setup
-```
+Full-stack веб-платформа для читателей (Vue 3 + Express + MongoDB).
+
+📖 Полная документация проекта — описание, стек, архитектура и инструкции по запуску — в корневом README репозитория: [../README.md](../README.md)
+
+## Быстрый старт
+
+```bash
 npm install
+cp .env.example .env   # заполните своими значениями
+npm run serve          # frontend
+node src/backend/server.js   # backend API
 ```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
